@@ -9,7 +9,7 @@ if os.path.isfile(userFile):
 else:
     f = open(userFile, "w")
     f.write("hashtag,viewed,time,liked,disliked,comments,posted,score")
-    f.write("\ntest,1,10,5,3,2,1,")
+    f.write("\ntest,1,10,5,3,2,1,77")
 df = pandas.read_csv(userFile, index_col="hashtag", sep=",")
 
 hashtags1 = [] #definiert die Liste hashtag1
