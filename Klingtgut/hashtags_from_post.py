@@ -4,7 +4,6 @@ import random
 from pandas import *
 import sys
 import logging
-import pathlib
 
 logging.basicConfig(level=logging.DEBUG)
 n = len(sys.argv)
