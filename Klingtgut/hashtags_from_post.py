@@ -3,16 +3,15 @@ import os.path
 import random
 from pandas import *
 import sys
-import logging
 
-logging.basicConfig(level=logging.DEBUG)
 n = len(sys.argv)
 
 
 
 if len(sys.argv[1]) == 30:
     user = str(sys.argv[1]) #User ID TODO: must be changed when I add the apis to the code 
-    logging.info('information')
+else:
+    exit()
 
 userFile =  "hashtags-" + user + "-.csv"
 if os.path.isfile(userFile):
