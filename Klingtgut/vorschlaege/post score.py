@@ -3,14 +3,14 @@ import os.path
 import random
 from pandas import *
 import sys
+n = len(sys.argv())
 
-n = len(sys.argv)
+if n == 2:
+    c = 0
 
-if n == 6:
-    if len(sys.argv[1]) == 30:
-        user = int(sys.argv[1]) #User ID TODO: must be changed when I add the apis to the code 
-    else:
-        exit()
+    post_score = 0
+
+    user = "113231132311323113231132311323" #User ID TODO: must be changed when I add the apis to the code 
     userFile = "hashtags-" + user + "-.csv"
     if os.path.isfile(userFile):
         pass
@@ -26,13 +26,8 @@ if n == 6:
     hashtags2 = []
     check = "#" #da durch wir jeder hastag erkannt
     splitPostSubSentinses = []
-    post = "Dies ist ein #Test Post für #Python. So das ist, der zweite, Satz ich nutze #VS-Code um zu #programmieren." #Post von dem man den Hastag haben will TODO: must be changed when I add the apis to the code 
+    post = "Dieser Post wir mit #Python bewertet. Weshalb dies ein #Test ist. Hier noch ein unbekanter Hashtag, #GitHub." #Post von dem man den Hastag haben will TODO: must be changed when I add the apis to the code 
     print(post) #druckt Post in Terminal nur zum debuggen
-
-    like = False
-    dislik = False
-    time = 10
-    comment = False
 
     postdot = post.rfind(".") #Findet vom hintersten Punkt im Post die Position
     post = post[:postdot] #Löscht den hintersten Punkt im Post
@@ -63,6 +58,26 @@ if n == 6:
 
     print(df)
 
+
+    for hashtag in hashtags2:
+        if hashtag in df.index.to_list():
+            print(f'der score von {hashtag} ist: {df.at[hashtag,"score"]}')
+            post_score = post_score + df.at[hashtag,"score"]
+        else:
+            print(f'{hashtag} ist nicht in der liste also ist der Standertwert: 100')
+            post_score = post_score + 100
+
+        c = c + 1
+
+    print(f'der Post Score ist: {post_score}')
+    print(f'der Post Score durch die Anzahl der Hashtags ist: {post_score / c}')
+
+
+
+
+
+
+    """
     for hashtag in hashtags2:
         time = random.randrange(4,120) #TODO: must be changed when I add the apis to the code 
         if hashtag in df.index.to_list():
@@ -114,3 +129,4 @@ if n == 6:
     print(df)
 
     df.to_csv(userFile)
+    """
