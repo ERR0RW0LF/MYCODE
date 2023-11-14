@@ -38,7 +38,7 @@ post = post[:postDot] #Löscht den hintersten Punkt im Post
 print(post) #druckt Post in Terminal nur zum debuggen
 
 splitPostSentinses = post.split(". ") #trennt den Post an jedem Punkt mit Leerzeichen danach und schreibt in Liste ohne Punkte
-print(splitPostSentinses) #druckt List von forheriger Line in Terminal nur zum debuggen
+print(splitPostSentinses) #druckt List von vorheriger Line in Terminal nur zum debuggen
 
 for satz in splitPostSentinses:
     if ', ' in satz:
