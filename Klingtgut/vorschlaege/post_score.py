@@ -32,9 +32,9 @@ df = pd.read_csv(userFile, index_col=0, sep=",")
 
 hashtags1 = [] #definiert die Liste hashtag1
 hashtags2 = []
-check = "#" #da durch wir jeder hastag erkannt
+check = "#" #da durch wir jeder hashtag erkannt
 splitPostSubSentinses = []
-post = "Dies ist ein #Test Post für #Python. So das ist, der zweite, Satz ich nutze #VS-Code um zu #programmieren." #Post von dem man den Hastag haben will TODO: must be changed when I add the apis to the code 
+post = "Dies ist ein #Test Post für #Python. So das ist, der zweite, Satz ich nutze #VS-Code um zu #programmieren." #Post von dem man den Hashtag haben will TODO: must be changed when I add the apis to the code 
 print(post) #druckt Post in Terminal nur zum debuggen
 
 postdot = post.rfind(".") #Findet vom hintersten Punkt im Post die Position
