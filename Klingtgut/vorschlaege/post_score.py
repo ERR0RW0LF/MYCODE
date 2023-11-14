@@ -41,8 +41,8 @@ postDot = post.rfind(".") #Findet vom hintersten Punkt im Post die Position
 post = post[:postDot] #Löscht den hintersten Punkt im Post
 print(post) #druckt Post in Terminal nur zum debuggen
 
-splitPostSentences = post.split(". ") #trent den Post an jebem Punkt mit Lehrzeichen danach und schreibt in Liste ohne Punkte
-print(splitPostSentences) #druckt List von forheriger Line in Terminal nur zum debuggen
+splitPostSentences = post.split(". ") #trennt den Post an jedem Punkt mit Leerzeichen danach und schreibt in Liste ohne Punkte
+print(splitPostSentences) #druckt List von vorheriger Line in Terminal nur zum debuggen
 
 for satz in splitPostSentences:
     if ', ' in satz:
