@@ -23,21 +23,21 @@ df = pd.read_csv(userFile, index_col=0, sep=",")
 
 hashtags1 = [] #definiert die Liste hashtag1
 hashtags2 = []
-check = "#" #da durch wir jeder hastag erkannt
-splitPostSubSentinses = []
-post = "Dies ist ein #Test Post für #Python. So das ist, der zweite, Satz ich nutze #VS-Code um zu #programmieren." #Post von dem man den Hastag haben will TODO: must be changed when I add the apis to the code 
+check = "#" #da durch wir jeder hashtag erkannt
+splitPostSubSentences = []
+post = "Dies ist ein #Test Post für #Python. So das ist, der zweite, Satz ich nutze #VS-Code um zu #programmieren." #Post von dem man den Hashtag haben will TODO: must be changed when I add the apis to the code 
 print(post) #druckt Post in Terminal nur zum debuggen
 
 like = False
-dislik = False
+dislike = False
 time = 10
 comment = False
 
-postdot = post.rfind(".") #Findet vom hintersten Punkt im Post die Position
-post = post[:postdot] #Löscht den hintersten Punkt im Post
+postDot = post.rfind(".") #Findet vom hintersten Punkt im Post die Position
+post = post[:postDot] #Löscht den hintersten Punkt im Post
 print(post) #druckt Post in Terminal nur zum debuggen
 
-splitPostSentinses = post.split(". ") #trent den Post an jebem Punkt mit Lehrzeichen danach und schreibt in Liste ohne Punkte
+splitPostSentinses = post.split(". ") #trennt den Post an jedem Punkt mit Leerzeichen danach und schreibt in Liste ohne Punkte
 print(splitPostSentinses) #druckt List von forheriger Line in Terminal nur zum debuggen
 
 for satz in splitPostSentinses:
