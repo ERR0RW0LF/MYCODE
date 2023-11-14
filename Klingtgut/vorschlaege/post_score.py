@@ -33,7 +33,7 @@ df = pd.read_csv(userFile, index_col=0, sep=",")
 hashtags1 = [] #definiert die Liste hashtag1
 hashtags2 = []
 check = "#" #da durch wir jeder hashtag erkannt
-splitPostSubSentinses = []
+splitPostSubSentences = []
 post = "Dies ist ein #Test Post für #Python. So das ist, der zweite, Satz ich nutze #VS-Code um zu #programmieren." #Post von dem man den Hashtag haben will TODO: must be changed when I add the apis to the code 
 print(post) #druckt Post in Terminal nur zum debuggen
 
@@ -41,18 +41,18 @@ postDot = post.rfind(".") #Findet vom hintersten Punkt im Post die Position
 post = post[:postDot] #Löscht den hintersten Punkt im Post
 print(post) #druckt Post in Terminal nur zum debuggen
 
-splitPostSentinses = post.split(". ") #trent den Post an jebem Punkt mit Lehrzeichen danach und schreibt in Liste ohne Punkte
-print(splitPostSentinses) #druckt List von forheriger Line in Terminal nur zum debuggen
+splitPostSentences = post.split(". ") #trent den Post an jebem Punkt mit Lehrzeichen danach und schreibt in Liste ohne Punkte
+print(splitPostSentences) #druckt List von forheriger Line in Terminal nur zum debuggen
 
-for satz in splitPostSentinses:
+for satz in splitPostSentences:
     if ', ' in satz:
-        splitPostSubSentinses.extend(satz.split(", "))
+        splitPostSubSentences.extend(satz.split(", "))
     else:
-        splitPostSubSentinses.append(satz)
+        splitPostSubSentences.append(satz)
 
-print(splitPostSubSentinses)
+print(splitPostSubSentences)
 
-for subSatz in splitPostSubSentinses:                                                       # TODO: for ö, ü, ä implement recognition and then replace with oe, ue, ae
+for subSatz in splitPostSubSentences:                                                       # TODO: for ö, ü, ä implement recognition and then replace with oe, ue, ae
     hashtags = [idx for idx in subSatz.split() if idx[0].lower() == check.lower()]          # sucht alle hashtags aus den Sätzen und fügt sie alle als einzelne Items in die Liste hashtags1
     hashtags1.extend(hashtags)                                                              #)
 
