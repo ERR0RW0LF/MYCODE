@@ -37,18 +37,18 @@ postDot = post.rfind(".") #Findet vom hintersten Punkt im Post die Position
 post = post[:postDot] #Löscht den hintersten Punkt im Post
 print(post) #druckt Post in Terminal nur zum debuggen
 
-splitPostSentinses = post.split(". ") #trennt den Post an jedem Punkt mit Leerzeichen danach und schreibt in Liste ohne Punkte
-print(splitPostSentinses) #druckt List von vorheriger Line in Terminal nur zum debuggen
+splitPostSentences = post.split(". ") #trennt den Post an jedem Punkt mit Leerzeichen danach und schreibt in Liste ohne Punkte
+print(splitPostSentences) #druckt List von vorheriger Line in Terminal nur zum debuggen
 
-for satz in splitPostSentinses:
+for satz in splitPostSentences:
     if ', ' in satz:
-        splitPostSubSentinses.extend(satz.split(", "))
+        splitPostSubSentences.extend(satz.split(", "))
     else:
-        splitPostSubSentinses.append(satz)
+        splitPostSubSentences.append(satz)
 
-print(splitPostSubSentinses)
+print(splitPostSubSentences)
 
-for subSatz in splitPostSubSentinses:                                                       # TODO: for ö, ü, ä implement recognition and then replace with oe, ue, ae
+for subSatz in splitPostSubSentences:                                                       # TODO: for ö, ü, ä implement recognition and then replace with oe, ue, ae
     hashtags = [idx for idx in subSatz.split() if idx[0].lower() == check.lower()]          # sucht alle hashtags aus den Sätzen und fügt sie alle als einzelne Items in die Liste hashtags1
     hashtags1.extend(hashtags)                                                              #)
 
