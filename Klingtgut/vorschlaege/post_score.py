@@ -14,7 +14,7 @@ else:
     exit()
 
 userFile =  "hashtags-" + user + "-.csv"
-postScoreFile = "post-scors-" + user + "-.csv"
+postScoreFile = "post-scores-" + user + "-.csv"
 if os.path.isfile(userFile):
     pass
 else:
