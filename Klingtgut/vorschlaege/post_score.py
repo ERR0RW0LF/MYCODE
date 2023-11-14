@@ -9,11 +9,12 @@ n = len(sys.argv)
 
 
 if len(sys.argv[1]) == 30:
-    user = str(sys.argv[1]) #User ID TODO: must be changed when I add the apis to the code 
+    user = str(sys.argv[1]) #User ID must be changed when I add the apis to the code 
 else:
     exit()
 
 userFile =  "hashtags-" + user + "-.csv"
+postScoreFile = "post-scors-" + user + "-.csv"
 if os.path.isfile(userFile):
     pass
 else:
@@ -21,6 +22,11 @@ else:
     f.write("hashtag,viewed,time,liked,disliked,comments,posted,score")
     f.write("\ntest,0,0,0,0,0,0,0")
     f.close()
+
+if os.path.isfile(postScoreFile):
+    pass
+else:
+    pf = open(postScoreFile, "w")
 
 df = pd.read_csv(userFile, index_col=0, sep=",")
 
