@@ -72,7 +72,7 @@ for hashtag in hashtags2:
         print(f'der score von {hashtag} ist: {df.at[hashtag,"score"]}')
         post_score = post_score + df.at[hashtag,"score"]
     else:
-        print(f'{hashtag} ist nicht in der liste also ist der Standertwert: 100')
+        print(f'{hashtag} ist nicht in der liste also ist der Standartwert: 100')
         post_score = post_score + 100
         
     c = c + 1
