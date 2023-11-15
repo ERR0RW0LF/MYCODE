@@ -17,7 +17,10 @@ userFile =  "hashtags-" + user + "-.csv"
 if os.path.isfile(userFile):
     pass
 else:
-    exit()
+    f = open(userFile, "w")
+    f.write("hashtag,viewed,time,liked,disliked,comments,posted,score")
+    f.write("\ntest,0,0,0,0,0,0,0")
+    f.close()
 
 df = pd.read_csv(userFile, index_col=0, sep=",")
 
