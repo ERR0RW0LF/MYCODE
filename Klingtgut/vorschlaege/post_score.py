@@ -23,7 +23,10 @@ else:
 if os.path.isfile(postScoreFile):
     pass
 else:
-    pf = open(postScoreFile, "w")
+    f = open(postScoreFile, "w")
+    f.write("post,viewed,score")
+    f.write("\n0,False,0")
+    f.close()
 
 df = pd.read_csv(userFile, index_col=0, sep=",")
 
