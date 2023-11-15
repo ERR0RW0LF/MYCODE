@@ -18,10 +18,7 @@ postScoreFile = "post-scores-" + user + "-.csv"
 if os.path.isfile(userFile):
     pass
 else:
-    f = open(userFile, "w")
-    f.write("hashtag,viewed,time,liked,disliked,comments,posted,score")
-    f.write("\ntest,0,0,0,0,0,0,0")
-    f.close()
+    exit()
 
 if os.path.isfile(postScoreFile):
     pass
