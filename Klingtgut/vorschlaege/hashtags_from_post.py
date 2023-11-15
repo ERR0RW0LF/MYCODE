@@ -82,7 +82,6 @@ for hashtag in hashtags2:
             df.at[hashtag,"posted"] = df.at[hashtag,"posted"] + 1
             
         df.at[hashtag,"score"] = df.at[hashtag,"time"] / df.at[hashtag,"viewed"] + 10 * (df.at[hashtag,"liked"] - df.at[hashtag,"disliked"]) + 5 * df.at[hashtag,"comments"] + 10 * df.at[hashtag,"posted"]
-        #TODO: Add sorting for the hashtags based on it's scores
     else:
         print(hashtag, " is not in csv")
 
