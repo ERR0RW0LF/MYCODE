@@ -87,13 +87,13 @@ print(f'der Post Score durch die Anzahl der Hashtags ist: {post_score / c}')
 
 """
 for hashtag in hashtags2:
-    time = random.randrange(4,120) #TODO: must be changed when I add the apis to the code 
+    time = random.randrange(4,120) 
     if hashtag in df.index.to_list():
         print(hashtag, " is in csv")
         df.at[hashtag,"viewed"] = df.at[hashtag,"viewed"] + 1
         print(df.at[hashtag,"viewed"])
         df.at[hashtag,"time"] = df.at[hashtag,"time"] + time
-        like = random.randrange(0,2)    #TODO: must be changed when I add the apis to the code 
+        like = random.randrange(0,2) 
         print(like)
         if like == 1:
             df.at[hashtag,"liked"] = df.at[hashtag,"liked"] + 1
@@ -106,11 +106,10 @@ for hashtag in hashtags2:
             df.at[hashtag,"posted"] = df.at[hashtag,"posted"] + 1
 
         df.at[hashtag,"score"] = df.at[hashtag,"time"] / df.at[hashtag,"viewed"] + 10 * (df.at[hashtag,"liked"] - df.at[hashtag,"disliked"]) + 5 * df.at[hashtag,"comments"] + 10 * df.at[hashtag,"posted"]
-        #TODO: Add sorting for the hashtags based on it's scores
     else:
         print(hashtag, " is not in csv")
 
-        new_row = {hashtag:[1,0,0,0,0,0,0/1+10*(1-0)+5*1+10*0]} #TODO: must be changed when I add the apis to the code 
+        new_row = {hashtag:[1,0,0,0,0,0,0/1+10*(1-0)+5*1+10*0]} 
         df_new_row = pd.DataFrame.from_dict(data=new_row,
                                             orient='index',
                                             columns=[
