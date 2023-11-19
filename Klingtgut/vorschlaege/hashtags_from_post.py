@@ -1,3 +1,7 @@
+"""
+This script extracts hashtags from a given post and updates a CSV file with the hashtag statistics.
+"""
+
 import pandas as pd
 import os.path
 import random
