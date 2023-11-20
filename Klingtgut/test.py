@@ -1,8 +1,12 @@
 import os.path
 import pathlib
 import sys
+import pandas as pd
 
-print(sys.argv[0])
-print(sys.argv[1])
+'''
+code for geting all hashtags from a string in a list
+'''
 
-print(len(str(sys.argv[1])))
+def get_hashtags:
+    pass
+
