@@ -15,6 +15,7 @@ n = len(sys.argv)
 if len(sys.argv[1]) == 30:
     user = str(sys.argv[1]) #User ID TODO: neat to add a check if the id is valid 
 else:
+    print("User ID is not valid")
     exit()
 
 userFile =  "hashtags-" + user + "-.csv"
