@@ -1,6 +1,5 @@
 import pandas as pd
 import os.path
-import random
 from pandas import *
 import sys
 
@@ -11,6 +10,7 @@ n = len(sys.argv)
 if len(sys.argv[1]) == 30:
     user = str(sys.argv[1]) #User ID must be changed when I add the apis to the code 
 else:
+    print("User ID is not valid")
     exit()
 
 userFile =  "hashtags-" + user + "-.csv"
@@ -18,7 +18,10 @@ postScoreFile = "post-scores-" + user + "-.csv"
 if os.path.isfile(userFile):
     pass
 else:
-    exit()
+    f = open(userFile, "w")
+    f.write("hashtag,viewed,time,liked,disliked,comments,posted,score")
+    f.write("\ntest,1,1,1,1,1,1,1")
+    f.close
 
 if os.path.isfile(postScoreFile):
     pass
@@ -34,6 +37,8 @@ hashtags1 = [] #definiert die Liste hashtag1
 hashtags2 = []
 check = "#" #da durch wir jeder hashtag erkannt
 splitPostSubSentences = []
+post_score = 0
+c = 0
 post = "Dies ist ein #Test Post für #Python. So das ist, der zweite, Satz ich nutze #VS-Code um zu #programmieren." #Post von dem man den Hashtag haben will TODO: must be changed when I add the apis to the code 
 print(post) #druckt Post in Terminal nur zum debuggen
 
