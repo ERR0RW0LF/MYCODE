@@ -1,4 +1,3 @@
-from PIL import Image, ImageDraw, ImageFont
 
 first_digit_codes = {0: ['A','A','A','A','A','A'],
                      1: ['A','A','B','A','B','B'],
