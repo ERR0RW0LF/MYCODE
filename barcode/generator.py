@@ -56,6 +56,24 @@ def barcode_part(number, type):
         return digit_code['C'][number]
     else:
         return None
+
+def check_digit(number):
+    number = str(number)
+    if len(number) == 12:
+        sum1 = 0
+        sum2 = 0
+        for i in range(0,12,2):
+            sum1 += int(number[i])
+        for i in range(1,12,2):
+            sum2 += int(number[i])
+        sum2 = sum2 * 3
+        sum = sum1 + sum2
+        if sum % 10 == 0:
+            return 0
+        else:
+            return 10 - (sum % 10)
+    else:
+        return None
     
 def barcode_generator(number):
     number = str(number)
@@ -74,4 +92,11 @@ def barcode_generator(number):
     else:
         return None
 
-        
+number = 123456789012
+if __name__ == '__main__':
+    print(number)
+    if len(str(number)) == 12:
+        number = str(number) + str(check_digit(number))
+        print(number)
+    barcode = barcode_generator(int(number))
+    print(barcode)
