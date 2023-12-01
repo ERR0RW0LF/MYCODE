@@ -46,9 +46,6 @@ digit_code = {'A': {0: [0,0,0,1,1,0,1],
 # q: what mens <= ?
 # a: <= means less than or equal to
 
-def first_digit(number):
-    while number <= 9:
-        return first_digit_codes[number]
 
 def barcode_part(number, type):
     if type == 'A':
@@ -60,6 +57,21 @@ def barcode_part(number, type):
     else:
         return None
     
-    
+def barcode_generator(number):
+    number = str(number)
+    if len(number) == 13:
+        first_digit = number[0]
+        number = number[1:]
+        first_digit = first_digit_codes[int(first_digit)]
+        barcode = []
+        barcode.append(first_digit)
+        for i in range(0,6):
+            barcode.append(barcode_part(int(number[i+1]), first_digit[i]))
+        barcode.append(barcode_part(int(number[6]), 'C'))
+        for i in range(7,12):
+            barcode.append(barcode_part(int(number[i+1]), 'C'))
+        return barcode
+    else:
+        return None
 
         
