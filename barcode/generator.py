@@ -1,3 +1,6 @@
+import sys
+import os
+from PIL import Image, ImageDraw
 
 first_digit_codes = {0: ['A','A','A','A','A','A'],
                      1: ['A','A','B','A','B','B'],
@@ -97,6 +100,23 @@ def barcode_generator(number):
     else:
         return None
 
+def barcode_image_generator(number):
+    barcode = barcode_generator(number)
+    if barcode:
+        barcode_width = len(barcode)
+        barcode_height = 50
+        barcode_image = Image.new('RGB', (barcode_width, barcode_height), 'white')
+        draw = ImageDraw.Draw(barcode_image)
+        for i in range(barcode_width):
+            if barcode[i] == 1:
+                draw.line((i, 0, i, barcode_height), fill='black')
+        return barcode_image
+    else:
+        return None
+
+
+
+
 number = 123456789012
 if __name__ == '__main__':
     print(number)
@@ -105,3 +125,4 @@ if __name__ == '__main__':
         print(number)
     barcode = barcode_generator(int(number))
     print(barcode)
+    
