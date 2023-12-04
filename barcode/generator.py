@@ -103,13 +103,13 @@ def barcode_generator(number):
 def barcode_image_generator(number):
     barcode = barcode_generator(number)
     if barcode:
-        barcode_width = len(barcode)
+        barcode_width = len(barcode)*2
         barcode_height = 50
         barcode_image = Image.new('RGB', (barcode_width, barcode_height), 'white')
         draw = ImageDraw.Draw(barcode_image)
         for i in range(barcode_width):
             if barcode[i] == 1:
-                draw.line((i, 0, i, barcode_height), fill='black')
+                draw.line((i*2, 0, i*2, barcode_height), fill='black')
         return barcode_image
     else:
         return None
