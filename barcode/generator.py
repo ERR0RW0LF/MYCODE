@@ -107,9 +107,9 @@ def barcode_image_generator(number):
         barcode_height = 50
         barcode_image = Image.new('RGB', (barcode_width, barcode_height), 'white')
         draw = ImageDraw.Draw(barcode_image)
-        for i in range(barcode_width/2):
+        for i in range(len(barcode)):
             if barcode[i] == 1:
-                draw.line((i*2, 0, i*2, barcode_height), fill='black')
+                draw.rectangle((i*2, 0, i*2+1, barcode_height), fill='black')
         return barcode_image
     else:
         return None
