@@ -82,14 +82,16 @@ def barcode_generator(number):
         number = number[1:]
         first_digit = first_digit_codes[int(first_digit)]
         barcode = []
-        barcode.append(first_digit)
+        barcode.extend([1,0,1])
         for i in range(0,6):
-            barcode.append(barcode_part(int(number[i]), first_digit[i]))
+            barcode.extend(barcode_part(int(number[i]), first_digit[i]))
         
-        barcode.append([0,1,0,1,0])
+        barcode.extend([0,1,0,1,0])
         
         for i in range(7,12):
-            barcode.append(barcode_part(int(number[i]), 'C'))
+            barcode.extend(barcode_part(int(number[i]), 'C'))
+
+        barcode.extend([1,0,1])
         
         return barcode
     else:
