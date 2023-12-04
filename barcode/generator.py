@@ -127,3 +127,4 @@ if __name__ == '__main__':
     print(barcode)
     barcode_image = barcode_image_generator(int(number))
     barcode_image.show()
+    barcode_image.save(f'barcode{str(number)}.png')
