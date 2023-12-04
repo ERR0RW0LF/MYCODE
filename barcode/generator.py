@@ -1,6 +1,6 @@
 import sys
 import os
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageOps
 
 first_digit_codes = {0: ['A','A','A','A','A','A'],
                      1: ['A','A','B','A','B','B'],
@@ -112,7 +112,9 @@ def barcode_image_generator(number):
                 draw.line((i, 0, i, barcode_height), fill='black')
         
         barcode_image = barcode_image.resize((barcode_width*10, barcode_height*10), Image.NEAREST)
-        
+        #q: how to i add a border to the image?
+        #a: use ImageOps.expand()
+        barcode_image = ImageOps.expand(barcode_image, border=10, fill='white')
         return barcode_image
     else:
         return None
