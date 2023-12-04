@@ -125,4 +125,5 @@ if __name__ == '__main__':
         print(number)
     barcode = barcode_generator(int(number))
     print(barcode)
-    
+    barcode_image = barcode_image_generator(int(number))
+    barcode_image.show()
