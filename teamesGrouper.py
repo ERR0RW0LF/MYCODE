@@ -1,4 +1,5 @@
 from __future__ import annotations
+from re import A
 from tkinter import Menu
 from turtle import st
 
@@ -75,12 +76,38 @@ def sort_students(students, sorting_mode: int):
 # [ ]     | Jane       | Doe
 # ...
 class AbsentStudentsWidget(urwid.WidgetWrap):
-    
     def __init__(self, students):
         self.students = students
         self.listbox = urwid.ListBox(urwid.SimpleFocusListWalker(self._create_widgets()))
         super().__init__(self.listbox)
     
+    #       UI:
+    #       absents | first name | last name
+    #       [ ]     | John       | Doe
+    #       [ ]     | Jane       | Doe
+    #       ...
+    #       [ ] ist eine Checkbox die wenn man während sie ausgewählt ist und dann enter gedrückt wird erst den schüler als abwesend markiert wodurch aus [ ] ein [X] wo das X rot ist wird und dann zum nächsten schüler springt
+    def _create_widgets(self):
+        widgets = []
+
+        # Add headers
+        headers = ['Abwesenheit', 'Vorname', 'Nachname']
+        widgets.append(urwid.Columns([urwid.Text(h) for h in headers], dividechars=1))
+
+        # Add students
+        for student in self.students:
+            checkbox = urwid.CheckBox('')
+            firstname = urwid.Text(student[0])
+            lastname = urwid.Text(student[1])
+            columns = urwid.Columns([checkbox, firstname, lastname], dividechars=1)
+            widgets.append(columns)
+
+        return widgets
+    
+    def listbox(self):
+        return self.listbox
+
+
 
 # UI View
 class MenuView(urwid.WidgetWrap):
@@ -105,19 +132,29 @@ class MenuView(urwid.WidgetWrap):
     ]
     def __init__(self, students):
         self.students = students
-        self.listbox = urwid.ListBox(urwid.SimpleFocusListWalker(self._create_widgets()))
-        super().__init__(self.listbox)
+        
+        super().__init__(self.main_window())
     def _create_widgets(self):
         widgets = []
+        blank = urwid.Divider()
         for student in self.students:
             widgets.append(urwid.Text(student[0] + " " + student[1]))
+        
+        print(widgets)
+        widgets.append(blank)
+        print(widgets)
+        student_widget = AbsentStudentsWidget(students=self.students)._create_widgets()
+        print(student_widget)
+        widgets.append(student_widget)
+        
         return widgets
     
     def keypress(self, size, key):
         if key in ("Q", "q", "esc"):
             raise urwid.ExitMainLoop()
         elif key == "enter":
-            self.listbox.body.append(urwid.Text("You pressed enter"))
+            #self.listbox.body.append(urwid.Text("You pressed enter"))
+            return super().keypress(size, key)
         else:
             return super().keypress(size, key)
 
@@ -126,10 +163,12 @@ class MenuView(urwid.WidgetWrap):
         # You can implement your mouse handling logic here.
         pass
     
-    def listbox(self):
-        return self.listbox
+    def main_window(self):
+        self.listbox = urwid.ListBox(urwid.SimpleListWalker(self._create_widgets()))
+        w = self.listbox
+        #w = urwid.LineBox(urwid.SimpleListWalker(self.listbox))
+        return w
     
-
 
 # UI Controller
 class MenuController:
