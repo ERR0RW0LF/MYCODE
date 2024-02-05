@@ -1,7 +1,7 @@
 # MYCODE
 
 test:
-'''stl
+```stl
 solid AssimpScene
  facet normal 1 0 0
   outer loop
@@ -164,7 +164,7 @@ solid AssimpScene
  endfacet
 
 endsolid AssimpScene
-'''
+```
 
 
 Code Map:
