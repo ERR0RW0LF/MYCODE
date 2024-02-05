@@ -1,5 +1,5 @@
 # MYCODE
 Code Map:
-![Visualization of the codebase](./diagram.svg)
+<--![Visualization of the codebase](./diagram.svg)-->
 
-![Glasses Project]('./Brillen Project.stl')
+![Glasses Project](./Brillen_Project.stl)
