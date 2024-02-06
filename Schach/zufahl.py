@@ -845,5 +845,3 @@ if __name__ == "__main__":
     
     board = board_base
     main(board, turn, movement)
-    
-    
