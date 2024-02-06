@@ -1,7 +1,9 @@
+from math import e
 import random
 from matplotlib.pylab import f
 import numpy as np
 from requests import get
+from torch import NoneType
 
 # board is a matrix 8x8x2 with 0, 1 or 2 in each cell (0: empty, 1: white, 2: black)
 # which piece is in the cell is determined by the second dimension of the matrix
@@ -20,10 +22,18 @@ board = np.array([
     [[1, 4, 0, 0, 0], [1, 2, 0, 0, 0], [1, 3, 0, 0, 0], [1, 5, 0, 0, 0], [1, 6, 0, 0, 0], [1, 3, 0, 0, 0], [1, 2, 0, 0, 0], [1, 4, 0, 0, 0]]
                   ])
 
+movesY = ["a", "b", "c", "d", "e", "f", "g", "h"]
+
+movement = []
+
 turn = 0
 
 # print the board in a human readable format using chess unicode characters
-def print_board(board):
+def print_board(board, moves, turn):
+    if moves != None:
+        for m in moves:
+            print(m, end=" ")
+    print()
     print("  a b c d e f g h")
     print("  -----------------")
     for i in range(8):
@@ -62,8 +72,12 @@ def print_board(board):
         print("|", 8 - i)
     print("  -----------------")
     print("  a b c d e f g h")
+    print("Turn: ", turn)
 
-
+# q: how can i print something in the console next to something else without a new line?
+# a: use the end parameter in the print function
+# q: how does the end parameter work?
+# a: the end parameter is the last character of the printed string
 # paterns for each piece
 # 0 can't move there, 1 can move there, 2 can move there and take a piece, 3 is position of the piece, 4 (for the king) Castling position, 5 (for the pawn) en passant position
 
@@ -474,26 +488,32 @@ def pawn_patern(board, x, y, color = 0, moved = 0):
     return patern
 
 # print paterns readable
-def print_patern(patern, moves):
+def print_patern(patern):
     print("  a b c d e f g h")
     print("  -----------------")
-    for i in range(8):
-        print(8 - i, end="|")
-        for j in range(8):
-            if patern[i, j] == 0:
+    if type(patern) == list:
+        for i in range(8):
+            print(8 - i, end="|")
+            for j in range(8):
+                if patern[i, j] == 0:
+                    print(" ", end=" ")
+                elif patern[i, j] == 1:
+                    print("o", end=" ")
+                elif patern[i, j] == 2:
+                    print("x", end=" ")
+                elif patern[i, j] == 3:
+                    print("P", end=" ")
+                elif patern[i, j] == 4:
+                    print("C", end=" ")
+                elif patern[i, j] == 5:
+                    print("E", end=" ")
+            print("|", 8 - i)
+    else:
+        for i in range(8):
+            print(8 - i, end="|")
+            for j in range(8):
                 print(" ", end=" ")
-            elif patern[i, j] == 1:
-                print("o", end=" ")
-            elif patern[i, j] == 2:
-                print("x", end=" ")
-            elif patern[i, j] == 3:
-                print("P", end=" ")
-            elif patern[i, j] == 4:
-                print("C", end=" ")
-            elif patern[i, j] == 5:
-                print("E", end=" ")
-        print("|", 8 - i, end="    ")
-        print(moves[i])
+            print("|", 8 - i)
     print("  -----------------")
     print("  a b c d e f g h")
 
@@ -529,7 +549,7 @@ def get_patern(board, x, y):
         return king_patern(board, x, y, board[x, y, 0], moved=board[x, y, 2])
 
 # move a piece on the board based on the patern and the number of the move (0 is the original position, 1 is the first possible position in the patern from left to right and up to down, 2 is the second possible position, ...) and return the new board
-def move_piece(board, x, y, move, turn):
+def move_piece(board, x, y, move, turn, moves: list):
     pattern = get_patern(board, x, y)
     if move == 0:
         return board
@@ -541,6 +561,26 @@ def move_piece(board, x, y, move, turn):
             if pattern[i, j] != 0 and pattern[i, j] != 3:
                 move -= 1
                 if move == 0:
+                    if board[x, y, 1] == 1:
+                        zug = 'P ' + str(movesY[y]) + str(8 - x) + ' to ' + str(movesY[j]) + str(8 - i)
+                    elif board[x, y, 1] == 2:
+                        zug = 'K ' + str(movesY[y]) + str(8 - x) + ' takes ' + str(movesY[j]) + str(8 - i)
+                    elif board[x, y, 1] == 3:
+                        zug = 'B ' + str(movesY[y]) + str(8 - x) + ' takes ' + str(movesY[j]) + str(8 - i)
+                    elif board[x, y, 1] == 4:
+                        zug = 'R ' + str(movesY[y]) + str(8 - x) + ' takes ' + str(movesY[j]) + str(8 - i)
+                    elif board[x, y, 1] == 5:
+                        zug = 'Q ' + str(movesY[y]) + str(8 - x) + ' takes ' + str(movesY[j]) + str(8 - i)
+                    elif board[x, y, 1] == 6:
+                        zug = 'K ' + str(movesY[y]) + str(8 - x) + ' takes ' + str(movesY[j]) + str(8 - i)
+                    print(zug)
+                    if moves != []:
+                        movement = moves.append(zug)
+                        print(1)
+                    else:
+                        movement = [zug]
+                        print(2)
+                    print(movement)
                     if pattern[i, j] == 5:
                         board[i, j] = board[x, y]
                         board[i, j, 3] = 1
@@ -550,13 +590,13 @@ def move_piece(board, x, y, move, turn):
                             board[i + 1, j, 3] = 2
                             board[i + 1, j, 4] = turn
                             board[x, y] = [0, 0, 0, 0, 0]
-                            return board
+                            return board, movement
                         elif pattern[i, j] == 5 and board[x, y, 0] == 2 and x == 6:
                             board[i - 1, j] = board[x, y]
                             board[i - 1, j, 3] = 2
                             board[i - 1, j, 4] = turn
                             board[x, y] = [0, 0, 0, 0, 0]
-                            return board
+                            return board, movement
                     elif pattern[i, j] == 4:
                         board[i, j] = board[x, y]
                         board[i, j, 2] += 1
@@ -567,13 +607,13 @@ def move_piece(board, x, y, move, turn):
                             board[7, 5, 2] += 1
                             board[7, 5, 4] = turn
                             board[7, 7] = [0, 0, 0, 0, 0]
-                            return board
+                            return board, movement
                         elif i == 7 and j == y - 2:
                             board[7, 3] = board[7, 0]
                             board[7, 3, 2] += 1
                             board[7, 3, 4] = turn
                             board[7, 0] = [0, 0, 0, 0, 0]
-                            return board
+                            return board, movement
                     elif pattern[i, j] == 2:
                         if board[i, j, 3] == 2:
                             if board[i, j, 0] == 1:
@@ -582,20 +622,20 @@ def move_piece(board, x, y, move, turn):
                                 board[i, j, 4] = turn
                                 board[i - 1, j] = [0, 0, 0, 0, 0]
                                 board[x, y] = [0, 0, 0, 0, 0]
-                                return board
+                                return board, movement
                             elif board[i, j, 0] == 2:
                                 board[i, j] = board[x, y]
                                 board[i, j, 3] = 1
                                 board[i, j, 4] = turn
                                 board[i + 1, j] = [0, 0, 0, 0, 0]
                                 board[x, y] = [0, 0, 0, 0, 0]
-                                return board
+                                return board, movement
                         else:
                             board[i, j] = board[x, y]
                             board[i, j, 3] = 1
                             board[i, j, 4] = turn
                             board[x, y] = [0, 0, 0, 0, 0]
-                            return board
+                            return board, movement
                         board[i, j] = board[x, y]
                         board[i, j, 2] += 1
                         board[i, j, 4] = turn
@@ -604,7 +644,7 @@ def move_piece(board, x, y, move, turn):
                     board[i, j, 2] += 1
                     board[i, j, 4] = turn
                     board[x, y] = [0, 0, 0, 0, 0]
-                    return board
+                    return board, movement
 
 def random_piece(board, turn):
     movable_pieces = []
@@ -626,31 +666,34 @@ def random_move(board, x, y):
 
 
 # print the board
-print_board(board)
-print()
-print(get_patern(board, 7, 4))
-print_patern(get_patern(board, 7, 4))
-board[7, 5] = [0, 0, 0, 0, 0]
+print_board(board, moves=movement, turn=turn)
+#print()
+#print(get_patern(board, 7, 4))
+#print_patern(get_patern(board, 7, 4))
+'''board[7, 5] = [0, 0, 0, 0, 0]
 board[7, 6] = [0, 0, 0, 0, 0]
 board[7, 3] = [0, 0, 0, 0, 0]
 board[7, 2] = [0, 0, 0, 0, 0]
-board[7, 1] = [0, 0, 0, 0, 0]
+board[7, 1] = [0, 0, 0, 0, 0]'''
+
+#print()
+#print(get_patern(board, 6, 4))
+#print_patern(get_patern(board, 7, 4))
+#print(get_possible_moves(board, 6, 4))
 
 print()
-print(get_patern(board, 6, 4))
-print_patern(get_patern(board, 7, 4))
-print(get_possible_moves(board, 6, 4))
+print_board(board=board, moves=movement, turn=turn)
 
 print()
-print_board(board=board)
+#print(get_patern(board, 7, 4))
+#print_patern(get_patern(board, 7, 4))
 
-print()
-print(get_patern(board, 7, 4))
-print_patern(get_patern(board, 7, 4))
-print_board(move_piece(board, 7, 4, 2, turn=turn))
-print()
-print(get_patern(board, 7, 3))
-print_patern(get_patern(board, 7, 3))
+board, movement = move_piece(board, 6, 4, 1, turn=turn, moves=movement)
 
+print_board(board, moves=movement, turn=turn)
 print()
+#print(get_patern(board, 7, 3))
+#print_patern(get_patern(board, 7, 3))
+
+#print()
 print(board[7, 3])
