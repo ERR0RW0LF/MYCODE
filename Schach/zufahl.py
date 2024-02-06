@@ -5,15 +5,17 @@ import numpy as np
 # which piece is in the cell is determined by the second dimension of the matrix
 # 0: none, 1: pawn, 2: knight, 3: bishop, 4: rook, 5: queen, 6: king
 
+# the first number in a cell is the color of the piece (0: empty, 1: white, 2: black) and the second number is the type of the piece and the third is how often the piece has moved and the fourth is if a pawn has moved 2 fields in the last turn (0: no, 2: is the jumped position, 1: is the position of the pawn)
+
 board = np.array([
-    [[2, 4], [2, 2], [2, 3], [2, 5], [2, 6], [2, 3], [2, 2], [2, 4]],
-    [[2, 1], [2, 1], [2, 1], [2, 1], [2, 1], [2, 1], [2, 1], [2, 1]],
-    [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]],
-    [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]],
-    [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]],
-    [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]],
-    [[1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1]],
-    [[1, 4], [1, 2], [1, 3], [1, 5], [1, 6], [1, 3], [1, 2], [1, 4]]
+    [[2, 4, 0, 0], [2, 2, 0, 0], [2, 3, 0, 0], [2, 5, 0, 0], [2, 6, 0, 0], [2, 3, 0, 0], [2, 2, 0, 0], [2, 4, 0, 0]],
+    [[2, 1, 0, 0], [2, 1, 0, 0], [2, 1, 0, 0], [2, 1, 0, 0], [2, 1, 0, 0], [2, 1, 0, 0], [2, 1, 0, 0], [2, 1, 0, 0]],
+    [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+    [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+    [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+    [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
+    [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0]],
+    [[1, 4, 0, 0], [1, 2, 0, 0], [1, 3, 0, 0], [1, 5, 0, 0], [1, 6, 0, 0], [1, 3, 0, 0], [1, 2, 0, 0], [1, 4, 0, 0]]
                   ])
 
 # print the board in a human readable format using chess unicode characters
@@ -57,7 +59,7 @@ def print_board(board):
 
 
 # paterns for each piece
-# 0 can't move there, 1 can move there, 2 can move there and take a piece, 3 is possicion of the piece
+# 0 can't move there, 1 can move there, 2 can move there and take a piece, 3 is possicion of the piece, 4 (for the king) Castling position, 5 (for the pawn) en passant position
 
 # bishop patern
 def bishop_patern(board, x, y, color = 0):
@@ -358,7 +360,7 @@ def queen_patern(board, x, y, color = 0):
     return patern
 
 # king patern
-def king_patern(board, x, y, color = 0):
+def king_patern(board, x, y, color = 0, moved = 0):
     patern = np.zeros((8, 8))
     if color == 2:
         enemyColor = 1
@@ -407,10 +409,22 @@ def king_patern(board, x, y, color = 0):
             patern[x - 1, y + 1] = 1
         elif board[x - 1, y + 1, 0] == enemyColor:
             patern[x - 1, y + 1] = 2
+    if moved == 0:
+        if color == 1:
+            if board[7, 5, 0] == 0 and board[7, 6, 0] == 0 and board[7, 7, 1] == 4 and board[7, 7, 2] == 0:
+                patern[7, 6] = 4
+            if board[7, 3, 0] == 0 and board[7, 2, 0] == 0 and board[7, 0, 1] == 4 and board[7, 0, 2] == 0:
+                patern[7, 2] = 4
+        elif color == 2:
+            if board[0, 5, 0] == 0 and board[0, 6, 0] == 0 and board[0, 7, 1] == 4 and board[0, 7, 2] == 0:
+                patern[0, 6] = 4
+            if board[0, 3, 0] == 0 and board[0, 2, 0] == 0 and board[0, 0, 1] == 4 and board[0, 0, 2] == 0:
+                patern[0, 2] = 4
+                
     return patern
 
 # pawn patern
-def pawn_patern(board, x, y, color = 0):
+def pawn_patern(board, x, y, color = 0, moved = 0):
     patern = np.zeros((8, 8))
     if color == 2:
         enemyColor = 1
@@ -431,6 +445,10 @@ def pawn_patern(board, x, y, color = 0):
                 patern[x - 1, y] = 1
             if x == 6 and board[x - 2, y, 0] == 0:
                 patern[x - 2, y] = 1
+            if moved == 0:
+                if board[x - 1, y, 0] == 0 and board[x - 2, y, 0] == 0:
+                    patern[x - 2, y] = 5
+                    patern[x - 1, y] = 1
     elif color == 2:
         if x + 1 < 8:
             if y - 1 >= 0:
@@ -443,6 +461,10 @@ def pawn_patern(board, x, y, color = 0):
                 patern[x + 1, y] = 1
             if x == 1 and board[x + 2, y, 0] == 0:
                 patern[x + 2, y] = 1
+            if moved == 0:
+                if board[x + 1, y, 0] == 0 and board[x + 2, y, 0] == 0:
+                    patern[x + 2, y] = 5
+                    patern[x + 1, y] = 1
     return patern
 
 # print paterns readable
@@ -460,13 +482,38 @@ def print_patern(patern):
                 print("x", end=" ")
             elif patern[i, j] == 3:
                 print("P", end=" ")
+            elif patern[i, j] == 4:
+                print("C", end=" ")
+            elif patern[i, j] == 5:
+                print("E", end=" ")
         print("|", 8 - i)
     print("  -----------------")
     print("  a b c d e f g h")
 
+# get number of all possible moves for a piece on the board
+def get_possible_moves(board, x, y):
+    if board[x, y, 1] == 1:
+        patern = pawn_patern(board, x, y, board[x, y, 0])
+    elif board[x, y, 1] == 2:
+        patern = knight_patern(board, x, y, board[x, y, 0])
+    elif board[x, y, 1] == 3:
+        patern = bishop_patern(board, x, y, board[x, y, 0])
+    elif board[x, y, 1] == 4:
+        patern = rook_patern(board, x, y, board[x, y, 0])
+    elif board[x, y, 1] == 5:
+        patern = queen_patern(board, x, y, board[x, y, 0])
+    elif board[x, y, 1] == 6:
+        patern = king_patern(board, x, y, board[x, y, 0], board[x, y, 2])
 
 # print the board
 print_board(board)
 print(bishop_patern(board, 3, 3, 2))
 print(knight_patern(board, 3, 3, 2))
-print_patern(pawn_patern(board, 3, 3, 2))
+board[7, 5] = [0, 0, 0, 0]
+board[7, 6] = [0, 0, 0, 0]
+board[7, 3] = [0, 0, 0, 0]
+board[7, 2] = [0, 0, 0, 0]
+board[7, 1] = [0, 0, 0, 0]
+
+print_patern(pawn_patern(board, 6, 4, 1, 0))
+print(get_possible_moves(board, 6, 4))
