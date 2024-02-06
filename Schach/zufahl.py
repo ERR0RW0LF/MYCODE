@@ -1,36 +1,54 @@
-from math import e
+from math import e, log
 import random
 from matplotlib.pylab import f
 import numpy as np
 from requests import get
-from torch import NoneType
+from torch import NoneType, rand
+import logging
 
 # board is a matrix 8x8x2 with 0, 1 or 2 in each cell (0: empty, 1: white, 2: black)
 # which piece is in the cell is determined by the second dimension of the matrix
 # 0: none, 1: pawn, 2: knight, 3: bishop, 4: rook, 5: queen, 6: king
 
 # the first number in a cell is the color of the piece (0: empty, 1: white, 2: black) and the second number is the type of the piece and the third is how often the piece has moved and the fourth is if a pawn has moved 2 fields in the last turn (0: no, 2: is the jumped position, 1: is the position of the pawn), the fifth is on what turn the piece has moved for the last time
-
 board = np.array([
-    [[2, 4, 0, 0, 0], [2, 2, 0, 0, 0], [2, 3, 0, 0, 0], [2, 5, 0, 0, 0], [2, 6, 0, 0, 0], [2, 3, 0, 0, 0], [2, 2, 0, 0, 0], [2, 4, 0, 0, 0]],
-    [[2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0]],
-    [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
-    [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
-    [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
-    [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
-    [[1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0]],
-    [[1, 4, 0, 0, 0], [1, 2, 0, 0, 0], [1, 3, 0, 0, 0], [1, 5, 0, 0, 0], [1, 6, 0, 0, 0], [1, 3, 0, 0, 0], [1, 2, 0, 0, 0], [1, 4, 0, 0, 0]]
+    [
+        [2, 4, 0, 0, 0], [2, 2, 0, 0, 0], [2, 3, 0, 0, 0], [2, 5, 0, 0, 0], [2, 6, 0, 0, 0], [2, 3, 0, 0, 0], [2, 2, 0, 0, 0], [2, 4, 0, 0, 0]
+    ],
+    [
+        [2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0]
+    ],
+    [
+        [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]
+    ],
+    [
+        [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]
+    ],
+    [
+        [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]
+    ],
+    [
+        [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]
+    ],
+    [
+        [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0]
+    ],
+    [
+        [1, 4, 0, 0, 0], [1, 2, 0, 0, 0], [1, 3, 0, 0, 0], [1, 5, 0, 0, 0], [1, 6, 0, 0, 0], [1, 3, 0, 0, 0], [1, 2, 0, 0, 0], [1, 4, 0, 0, 0]
+    ]
                   ])
 
 movesY = ["a", "b", "c", "d", "e", "f", "g", "h"]
 
 movement = []
 
-turn = 0
 
 # print the board in a human readable format using chess unicode characters
 def print_board(board, moves, turn):
-    if moves != None:
+    if len(moves) > 0:
+        for m in moves:
+            print(m, end=" ")
+    elif moves != None:
         for m in moves:
             print(m, end=" ")
     print()
@@ -39,6 +57,7 @@ def print_board(board, moves, turn):
     for i in range(8):
         print(8 - i, end="|")
         for j in range(8):
+            #logging.info(board[i, j])
             if board[i, j, 0] == 0:
                 print(" ", end=" ")
             elif board[i, j, 3] == 2:
@@ -444,7 +463,7 @@ def king_patern(board, x, y, color = 0, moved = 0):
     return patern
 
 # pawn patern
-def pawn_patern(board, x, y, color = 0, moved = 0):
+def pawn_patern(board, x, y, color = 0):
     patern = np.zeros((8, 8))
     if color == 2:
         enemyColor = 1
@@ -452,6 +471,7 @@ def pawn_patern(board, x, y, color = 0, moved = 0):
         enemyColor = 2
     else:
         return patern
+    moved = board[x, y, 2]
     patern[x, y] = 3
     if color == 1:
         if x - 1 >= 0:
@@ -552,15 +572,17 @@ def get_patern(board, x, y):
 def move_piece(board, x, y, move, turn, moves: list):
     pattern = get_patern(board, x, y)
     if move == 0:
-        return board
+        return board, moves
     elif move > get_possible_moves(board, x, y):
-        return board
+        return board, moves
     
     for i in range(8):
         for j in range(8):
             if pattern[i, j] != 0 and pattern[i, j] != 3:
                 move -= 1
+                logging.info("Move: " + str(move))
                 if move == 0:
+                    logging.info("Move: " + str(move))
                     if board[x, y, 1] == 1:
                         zug = 'P ' + str(movesY[y]) + str(8 - x) + ' to ' + str(movesY[j]) + str(8 - i)
                     elif board[x, y, 1] == 2:
@@ -573,14 +595,20 @@ def move_piece(board, x, y, move, turn, moves: list):
                         zug = 'Q ' + str(movesY[y]) + str(8 - x) + ' takes ' + str(movesY[j]) + str(8 - i)
                     elif board[x, y, 1] == 6:
                         zug = 'K ' + str(movesY[y]) + str(8 - x) + ' takes ' + str(movesY[j]) + str(8 - i)
-                    print(zug)
-                    if moves != []:
-                        movement = moves.append(zug)
-                        print(1)
+                    logging.info(zug)
+                    logging.info(moves)
+                    if len(moves) > 0:
+                        moves.append(zug)
+                        movement = moves
+                        logging.info(1)
+                    elif moves != []:
+                        moves.append(zug)
+                        movement = moves
+                        logging.info(1)
                     else:
                         movement = [zug]
-                        print(2)
-                    print(movement)
+                        logging.info(2)
+                    logging.info(movement)
                     if pattern[i, j] == 5:
                         board[i, j] = board[x, y]
                         board[i, j, 3] = 1
@@ -647,10 +675,11 @@ def move_piece(board, x, y, move, turn, moves: list):
                     return board, movement
 
 def random_piece(board, turn):
+    
     movable_pieces = []
     for i in range(8):
         for j in range(8):
-            if board[i, j, 0] == turn%2 + 1:
+            if board[i, j, 0] == (int(turn) % 2) + 1:
                 if get_possible_moves(board, i, j) > 0:
                     movable_pieces.append((i, j))
     if len(movable_pieces) == 0:
@@ -659,41 +688,92 @@ def random_piece(board, turn):
         return movable_pieces[random.randint(0, len(movable_pieces) - 1)]
 
 def random_move(board, x, y):
-    return random.randint(0, get_possible_moves(board, x, y))
+    return random.randint(0, get_possible_moves(board, x, y) - 1)
 
+# determine the winner of the game
+def get_winner(board):
+    for i in range(8):
+        for j in range(8):
+            if board[i, j, 1] == 6 and board[i, j, 0] == 1:
+                for k in range(8):
+                    for l in range(8):
+                        if board[k, l, 0] == 2:
+                            if get_possible_moves(board, k, l) > 0:
+                                return 0
+                return 1
+            if board[i, j, 1] == 6 and board[i, j, 0] == 2:
+                for k in range(8):
+                    for l in range(8):
+                        if board[k, l, 0] == 1:
+                            if get_possible_moves(board, k, l) > 0:
+                                return 0
+                return 2
+    return 0
+# q: what are the outputs of the get_winner function?
+# a: 0 is no winner, 1 is white wins, 2 is black wins
 
+# round 
+def round(board, turn, moves):
+    
+    piece = random_piece(board, turn)
+    if piece == None:
+        return board, turn, moves
+    move = random_move(board, piece[0], piece[1])
+    move_out = move_piece(board, piece[0], piece[1], move, turn, moves)
+    board = move_out[0]
+    moves = move_out[1]
+    return board, turn + 1, moves
 
+# main function
+def main(board, turn: int, moves):
+    
+    while get_winner(board) == 0:
+        board, turn, moves = round(board, turn, moves)
+        print_board(board, moves, turn)
+    print("Winner: ", get_winner(board))
+    print("Moves: ", moves)
+    return board, turn, moves
 
 
 # print the board
-print_board(board, moves=movement, turn=turn)
+#print_board(board, moves=movement, turn=turn)
+##print()
+##print(get_patern(board, 7, 4))
+##print_patern(get_patern(board, 7, 4))
+#'''board[7, 5] = [0, 0, 0, 0, 0]
+#board[7, 6] = [0, 0, 0, 0, 0]
+#board[7, 3] = [0, 0, 0, 0, 0]
+#board[7, 2] = [0, 0, 0, 0, 0]
+#board[7, 1] = [0, 0, 0, 0, 0]'''
+#
+##print()
+##print(get_patern(board, 6, 4))
+##print_patern(get_patern(board, 7, 4))
+##print(get_possible_moves(board, 6, 4))
+#
 #print()
-#print(get_patern(board, 7, 4))
-#print_patern(get_patern(board, 7, 4))
-'''board[7, 5] = [0, 0, 0, 0, 0]
-board[7, 6] = [0, 0, 0, 0, 0]
-board[7, 3] = [0, 0, 0, 0, 0]
-board[7, 2] = [0, 0, 0, 0, 0]
-board[7, 1] = [0, 0, 0, 0, 0]'''
-
+#print_board(board=board, moves=movement, turn=turn)
+#
 #print()
-#print(get_patern(board, 6, 4))
-#print_patern(get_patern(board, 7, 4))
-#print(get_possible_moves(board, 6, 4))
-
-print()
-print_board(board=board, moves=movement, turn=turn)
-
-print()
-#print(get_patern(board, 7, 4))
-#print_patern(get_patern(board, 7, 4))
-
-board, movement = move_piece(board, 6, 4, 1, turn=turn, moves=movement)
-
-print_board(board, moves=movement, turn=turn)
-print()
-#print(get_patern(board, 7, 3))
-#print_patern(get_patern(board, 7, 3))
-
+##print(get_patern(board, 7, 4))
+##print_patern(get_patern(board, 7, 4))
+#
+#board, movement = move_piece(board, 6, 4, 1, turn=turn, moves=movement)
+#
+#print_board(board, moves=movement, turn=turn)
 #print()
-print(board[7, 3])
+##print(get_patern(board, 7, 3))
+##print_patern(get_patern(board, 7, 3))
+#
+##print()
+#print(board[7, 3])
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+    logging.info('Started')
+    logging.info('Imported modules')
+    logging.info('Starting the game')
+    turn = 0
+    seed = 0
+    random.seed(seed)
+    main(board, turn, movement)
