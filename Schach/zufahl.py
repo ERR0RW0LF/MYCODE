@@ -56,7 +56,7 @@ def print_board(board, last_move, turn):
     
     print()
     print("  a b c d e f g h")
-    print("  -----------------")
+    print("  ----------------")
     for i in range(8):
         print(str(8 - i), end="|")
         for j in range(8):
@@ -92,7 +92,7 @@ def print_board(board, last_move, turn):
                 elif board[i, j, 1] == 6:
                     print("\u265A", end=" ")
         print("|", 8 - i)
-    print("  -----------------")
+    print("  ----------------")
     print("  a b c d e f g h")
     print("Turn: ", turn)
 
