@@ -846,8 +846,4 @@ if __name__ == "__main__":
     board = board_base
     main(board, turn, movement)
     
-    # coller test
-    #color = Back.LIGHTWHITE_EX
-    #print(color  + "Test 1: \u265A " + Style.RESET_ALL + " \u265A ")
-    #print(color  + "Test 2: \u2654 " + Style.RESET_ALL + " \u2654 ")
-    print(Style.RESET_ALL)
+    
