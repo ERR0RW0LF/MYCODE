@@ -1,17 +1,21 @@
+from hmac import new
 from math import e, log
 import random
 from matplotlib.pylab import f
+from matplotlib.pyplot import pie
 import numpy as np
 from requests import get
 from torch import NoneType, rand
 import logging
+import time
+from colorama import Fore, Back, Style
 
 # board is a matrix 8x8x2 with 0, 1 or 2 in each cell (0: empty, 1: white, 2: black)
 # which piece is in the cell is determined by the second dimension of the matrix
 # 0: none, 1: pawn, 2: knight, 3: bishop, 4: rook, 5: queen, 6: king
 
 # the first number in a cell is the color of the piece (0: empty, 1: white, 2: black) and the second number is the type of the piece and the third is how often the piece has moved and the fourth is if a pawn has moved 2 fields in the last turn (0: no, 2: is the jumped position, 1: is the position of the pawn), the fifth is on what turn the piece has moved for the last time
-board = np.array([
+board_base = np.array([
     [
         [2, 4, 0, 0, 0], [2, 2, 0, 0, 0], [2, 3, 0, 0, 0], [2, 5, 0, 0, 0], [2, 6, 0, 0, 0], [2, 3, 0, 0, 0], [2, 2, 0, 0, 0], [2, 4, 0, 0, 0]
     ],
@@ -44,18 +48,17 @@ movement = []
 
 
 # print the board in a human readable format using chess unicode characters
-def print_board(board, moves, turn):
-    if len(moves) > 0:
-        for m in moves:
-            print(m, end=" ")
-    elif moves != None:
-        for m in moves:
-            print(m, end=" ")
+def print_board(board, last_move, turn):
+    if turn != 0:
+        delete_last_lines(15)
+    if len(last_move) > 0:
+        print("Last move: ", last_move)
+    
     print()
     print("  a b c d e f g h")
     print("  -----------------")
     for i in range(8):
-        print(8 - i, end="|")
+        print(str(8 - i), end="|")
         for j in range(8):
             #logging.info(board[i, j])
             if board[i, j, 0] == 0:
@@ -571,10 +574,11 @@ def get_patern(board, x, y):
 # move a piece on the board based on the patern and the number of the move (0 is the original position, 1 is the first possible position in the patern from left to right and up to down, 2 is the second possible position, ...) and return the new board
 def move_piece(board, x, y, move, turn, moves: list):
     pattern = get_patern(board, x, y)
+    last_move = ""
     if move == 0:
-        return board, moves
+        return board, moves, last_move
     elif move > get_possible_moves(board, x, y):
-        return board, moves
+        return board, moves, last_move
     
     for i in range(8):
         for j in range(8):
@@ -609,6 +613,7 @@ def move_piece(board, x, y, move, turn, moves: list):
                         movement = [zug]
                         logging.info(2)
                     logging.info(movement)
+                    last_move = zug
                     if pattern[i, j] == 5:
                         board[i, j] = board[x, y]
                         board[i, j, 3] = 1
@@ -618,13 +623,13 @@ def move_piece(board, x, y, move, turn, moves: list):
                             board[i + 1, j, 3] = 2
                             board[i + 1, j, 4] = turn
                             board[x, y] = [0, 0, 0, 0, 0]
-                            return board, movement
+                            return board, movement, last_move
                         elif pattern[i, j] == 5 and board[x, y, 0] == 2 and x == 6:
                             board[i - 1, j] = board[x, y]
                             board[i - 1, j, 3] = 2
                             board[i - 1, j, 4] = turn
                             board[x, y] = [0, 0, 0, 0, 0]
-                            return board, movement
+                            return board, movement, last_move
                     elif pattern[i, j] == 4:
                         board[i, j] = board[x, y]
                         board[i, j, 2] += 1
@@ -635,13 +640,13 @@ def move_piece(board, x, y, move, turn, moves: list):
                             board[7, 5, 2] += 1
                             board[7, 5, 4] = turn
                             board[7, 7] = [0, 0, 0, 0, 0]
-                            return board, movement
+                            return board, movement, last_move
                         elif i == 7 and j == y - 2:
                             board[7, 3] = board[7, 0]
                             board[7, 3, 2] += 1
                             board[7, 3, 4] = turn
                             board[7, 0] = [0, 0, 0, 0, 0]
-                            return board, movement
+                            return board, movement, last_move
                     elif pattern[i, j] == 2:
                         if board[i, j, 3] == 2:
                             if board[i, j, 0] == 1:
@@ -650,20 +655,20 @@ def move_piece(board, x, y, move, turn, moves: list):
                                 board[i, j, 4] = turn
                                 board[i - 1, j] = [0, 0, 0, 0, 0]
                                 board[x, y] = [0, 0, 0, 0, 0]
-                                return board, movement
+                                return board, movement, last_move
                             elif board[i, j, 0] == 2:
                                 board[i, j] = board[x, y]
                                 board[i, j, 3] = 1
                                 board[i, j, 4] = turn
                                 board[i + 1, j] = [0, 0, 0, 0, 0]
                                 board[x, y] = [0, 0, 0, 0, 0]
-                                return board, movement
+                                return board, movement, last_move
                         else:
                             board[i, j] = board[x, y]
                             board[i, j, 3] = 1
                             board[i, j, 4] = turn
                             board[x, y] = [0, 0, 0, 0, 0]
-                            return board, movement
+                            return board, movement, last_move
                         board[i, j] = board[x, y]
                         board[i, j, 2] += 1
                         board[i, j, 4] = turn
@@ -672,7 +677,7 @@ def move_piece(board, x, y, move, turn, moves: list):
                     board[i, j, 2] += 1
                     board[i, j, 4] = turn
                     board[x, y] = [0, 0, 0, 0, 0]
-                    return board, movement
+                    return board, movement, last_move
 
 def random_piece(board, turn):
     
@@ -692,47 +697,102 @@ def random_move(board, x, y):
 
 # determine the winner of the game
 def get_winner(board):
+    pieces = 0
+    wight_king = False
+    black_king = False
     for i in range(8):
         for j in range(8):
+            pieces = 0
             if board[i, j, 1] == 6 and board[i, j, 0] == 1:
                 for k in range(8):
                     for l in range(8):
-                        if board[k, l, 0] == 2:
+                        if board[k, l, 0] == 2 or board[k, l, 0] == 1:
+                            pieces += 1
+                        if board[k, l, 0] == 2 and board[k, l, 1] == 6:
+                            black_king = True
+                        elif board[k, l, 0] == 2:
                             if get_possible_moves(board, k, l) > 0:
-                                return 0
-                return 1
+                                can_move = True
+                if pieces <= 4:
+                    return 3
+                elif not can_move:
+                    return 1
+                elif black_king == False:
+                    return 1
+            can_move = False
             if board[i, j, 1] == 6 and board[i, j, 0] == 2:
                 for k in range(8):
                     for l in range(8):
-                        if board[k, l, 0] == 1:
+                        if board[k, l, 0] == 1 or board[k, l, 0] == 2:
+                            pieces += 1
+                        if board[k, l, 0] == 1 and board[k, l, 1] == 6:
+                            wight_king = True
+                        elif board[k, l, 0] == 2:
                             if get_possible_moves(board, k, l) > 0:
-                                return 0
-                return 2
+                                can_move = True
+                if pieces <= 4:
+                    return 3
+                elif not can_move:
+                    return 2
+                elif wight_king == False:
+                    return 2
+    if wight_king == True and black_king == True:
+        return 0
     return 0
 # q: what are the outputs of the get_winner function?
-# a: 0 is no winner, 1 is white wins, 2 is black wins
+# a: 0 is no winner, 1 is white wins, 2 is black wins, 3 is draw
+
+# readable winner
+def readable_winner(winner):
+    if winner == 0:
+        return "No winner"
+    elif winner == 1:
+        return "White wins"
+    elif winner == 2:
+        return "Black wins"
+    elif winner == 3:
+        return "Draw"
 
 # round 
 def round(board, turn, moves):
+    new_board = np.array(board)
+    # q: how can i check if two numpy arrays with 3 dimensions are equal?
+    # a: np.array_equal(array1, array2)
     
     piece = random_piece(board, turn)
     if piece == None:
-        return board, turn, moves
+        return board, turn, moves, ""
     move = random_move(board, piece[0], piece[1])
     move_out = move_piece(board, piece[0], piece[1], move, turn, moves)
-    board = move_out[0]
+    new_board = np.array(move_out[0])
     moves = move_out[1]
-    return board, turn + 1, moves
+    last_move = move_out[2]
+    board = new_board
+    return board, turn + 1, moves, last_move
 
 # main function
 def main(board, turn: int, moves):
-    
+    print('\n' * 15)
     while get_winner(board) == 0:
-        board, turn, moves = round(board, turn, moves)
-        print_board(board, moves, turn)
-    print("Winner: ", get_winner(board))
-    print("Moves: ", moves)
+        old_turn = turn
+        board, turn, moves, last_move = round(board, turn, moves)
+        if old_turn == turn or last_move == "":
+            continue
+        else:
+            print_board(board, last_move, turn)
+            time.sleep(0.5)
+    print("Winner: ", readable_winner(get_winner(board)))
+    print("Moves: ")
+    for i in moves:
+        print(i)
     return board, turn, moves
+
+# overwrite the board with the new board in the terminal
+def delete_last_lines(n=1):
+    CURSOR_UP_ONE = '\x1b[1A'
+    ERASE_LINE = '\x1b[2K'
+    for _ in range(n):
+        print(CURSOR_UP_ONE + ERASE_LINE, end='')
 
 
 # print the board
@@ -768,12 +828,26 @@ def main(board, turn: int, moves):
 ##print()
 #print(board[7, 3])
 
+# q: what levels of logging are there?
+# a: DEBUG, INFO, WARNING, ERROR, CRITICAL
+# q: what is the difference between the levels of logging?
+# a: DEBUG is for debugging, INFO is for information, WARNING is for warnings, ERROR is for errors, CRITICAL is for critical errors
+
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    print(Style.RESET_ALL)
+    logging.basicConfig(level=logging.WARNING)
     logging.info('Started')
     logging.info('Imported modules')
     logging.info('Starting the game')
     turn = 0
-    seed = 0
-    random.seed(seed)
+    board = board_base
     main(board, turn, movement)
+    
+    board = board_base
+    main(board, turn, movement)
+    
+    # coller test
+    #color = Back.LIGHTWHITE_EX
+    #print(color  + "Test 1: \u265A " + Style.RESET_ALL + " \u265A ")
+    #print(color  + "Test 2: \u2654 " + Style.RESET_ALL + " \u2654 ")
+    print(Style.RESET_ALL)
