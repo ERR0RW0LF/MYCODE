@@ -1,22 +1,26 @@
 import random
+from matplotlib.pylab import f
 import numpy as np
+from requests import get
 
 # board is a matrix 8x8x2 with 0, 1 or 2 in each cell (0: empty, 1: white, 2: black)
 # which piece is in the cell is determined by the second dimension of the matrix
 # 0: none, 1: pawn, 2: knight, 3: bishop, 4: rook, 5: queen, 6: king
 
-# the first number in a cell is the color of the piece (0: empty, 1: white, 2: black) and the second number is the type of the piece and the third is how often the piece has moved and the fourth is if a pawn has moved 2 fields in the last turn (0: no, 2: is the jumped position, 1: is the position of the pawn)
+# the first number in a cell is the color of the piece (0: empty, 1: white, 2: black) and the second number is the type of the piece and the third is how often the piece has moved and the fourth is if a pawn has moved 2 fields in the last turn (0: no, 2: is the jumped position, 1: is the position of the pawn), the fifth is on what turn the piece has moved for the last time
 
 board = np.array([
-    [[2, 4, 0, 0], [2, 2, 0, 0], [2, 3, 0, 0], [2, 5, 0, 0], [2, 6, 0, 0], [2, 3, 0, 0], [2, 2, 0, 0], [2, 4, 0, 0]],
-    [[2, 1, 0, 0], [2, 1, 0, 0], [2, 1, 0, 0], [2, 1, 0, 0], [2, 1, 0, 0], [2, 1, 0, 0], [2, 1, 0, 0], [2, 1, 0, 0]],
-    [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-    [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-    [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-    [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-    [[1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0], [1, 1, 0, 0]],
-    [[1, 4, 0, 0], [1, 2, 0, 0], [1, 3, 0, 0], [1, 5, 0, 0], [1, 6, 0, 0], [1, 3, 0, 0], [1, 2, 0, 0], [1, 4, 0, 0]]
+    [[2, 4, 0, 0, 0], [2, 2, 0, 0, 0], [2, 3, 0, 0, 0], [2, 5, 0, 0, 0], [2, 6, 0, 0, 0], [2, 3, 0, 0, 0], [2, 2, 0, 0, 0], [2, 4, 0, 0, 0]],
+    [[2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0], [2, 1, 0, 0, 0]],
+    [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+    [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+    [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+    [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+    [[1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0]],
+    [[1, 4, 0, 0, 0], [1, 2, 0, 0, 0], [1, 3, 0, 0, 0], [1, 5, 0, 0, 0], [1, 6, 0, 0, 0], [1, 3, 0, 0, 0], [1, 2, 0, 0, 0], [1, 4, 0, 0, 0]]
                   ])
+
+turn = 0
 
 # print the board in a human readable format using chess unicode characters
 def print_board(board):
@@ -26,6 +30,8 @@ def print_board(board):
         print(8 - i, end="|")
         for j in range(8):
             if board[i, j, 0] == 0:
+                print(" ", end=" ")
+            elif board[i, j, 3] == 2:
                 print(" ", end=" ")
             elif board[i, j, 0] == 2:
                 if board[i, j, 1] == 1:
@@ -59,7 +65,7 @@ def print_board(board):
 
 
 # paterns for each piece
-# 0 can't move there, 1 can move there, 2 can move there and take a piece, 3 is possicion of the piece, 4 (for the king) Castling position, 5 (for the pawn) en passant position
+# 0 can't move there, 1 can move there, 2 can move there and take a piece, 3 is position of the piece, 4 (for the king) Castling position, 5 (for the pawn) en passant position
 
 # bishop patern
 def bishop_patern(board, x, y, color = 0):
@@ -468,7 +474,7 @@ def pawn_patern(board, x, y, color = 0, moved = 0):
     return patern
 
 # print paterns readable
-def print_patern(patern):
+def print_patern(patern, moves):
     print("  a b c d e f g h")
     print("  -----------------")
     for i in range(8):
@@ -486,7 +492,8 @@ def print_patern(patern):
                 print("C", end=" ")
             elif patern[i, j] == 5:
                 print("E", end=" ")
-        print("|", 8 - i)
+        print("|", 8 - i, end="    ")
+        print(moves[i])
     print("  -----------------")
     print("  a b c d e f g h")
 
@@ -506,15 +513,144 @@ def get_possible_moves(board, x, y):
         patern = king_patern(board, x, y, board[x, y, 0], board[x, y, 2])
     return np.count_nonzero(patern) - 1
 
+# get the patern for a piece on the board
+def get_patern(board, x, y):
+    if board[x, y, 1] == 1:
+        return pawn_patern(board, x, y, board[x, y, 0])
+    elif board[x, y, 1] == 2:
+        return knight_patern(board, x, y, board[x, y, 0])
+    elif board[x, y, 1] == 3:
+        return bishop_patern(board, x, y, board[x, y, 0])
+    elif board[x, y, 1] == 4:
+        return rook_patern(board, x, y, board[x, y, 0])
+    elif board[x, y, 1] == 5:
+        return queen_patern(board, x, y, board[x, y, 0])
+    elif board[x, y, 1] == 6:
+        return king_patern(board, x, y, board[x, y, 0], moved=board[x, y, 2])
+
+# move a piece on the board based on the patern and the number of the move (0 is the original position, 1 is the first possible position in the patern from left to right and up to down, 2 is the second possible position, ...) and return the new board
+def move_piece(board, x, y, move, turn):
+    pattern = get_patern(board, x, y)
+    if move == 0:
+        return board
+    elif move > get_possible_moves(board, x, y):
+        return board
+    
+    for i in range(8):
+        for j in range(8):
+            if pattern[i, j] != 0 and pattern[i, j] != 3:
+                move -= 1
+                if move == 0:
+                    if pattern[i, j] == 5:
+                        board[i, j] = board[x, y]
+                        board[i, j, 3] = 1
+                        board[i, j, 4] = turn
+                        if pattern[i, j] == 5 and board[x, y, 0] == 1 and x == 6:
+                            board[i + 1, j] = board[x, y]
+                            board[i + 1, j, 3] = 2
+                            board[i + 1, j, 4] = turn
+                            board[x, y] = [0, 0, 0, 0, 0]
+                            return board
+                        elif pattern[i, j] == 5 and board[x, y, 0] == 2 and x == 6:
+                            board[i - 1, j] = board[x, y]
+                            board[i - 1, j, 3] = 2
+                            board[i - 1, j, 4] = turn
+                            board[x, y] = [0, 0, 0, 0, 0]
+                            return board
+                    elif pattern[i, j] == 4:
+                        board[i, j] = board[x, y]
+                        board[i, j, 2] += 1
+                        board[i, j, 4] = turn
+                        board[x, y] = [0, 0, 0, 0, 0]
+                        if i == 7 and j == y + 2:
+                            board[7, 5] = board[7, 7]
+                            board[7, 5, 2] += 1
+                            board[7, 5, 4] = turn
+                            board[7, 7] = [0, 0, 0, 0, 0]
+                            return board
+                        elif i == 7 and j == y - 2:
+                            board[7, 3] = board[7, 0]
+                            board[7, 3, 2] += 1
+                            board[7, 3, 4] = turn
+                            board[7, 0] = [0, 0, 0, 0, 0]
+                            return board
+                    elif pattern[i, j] == 2:
+                        if board[i, j, 3] == 2:
+                            if board[i, j, 0] == 1:
+                                board[i, j] = board[x, y]
+                                board[i, j, 3] = 1
+                                board[i, j, 4] = turn
+                                board[i - 1, j] = [0, 0, 0, 0, 0]
+                                board[x, y] = [0, 0, 0, 0, 0]
+                                return board
+                            elif board[i, j, 0] == 2:
+                                board[i, j] = board[x, y]
+                                board[i, j, 3] = 1
+                                board[i, j, 4] = turn
+                                board[i + 1, j] = [0, 0, 0, 0, 0]
+                                board[x, y] = [0, 0, 0, 0, 0]
+                                return board
+                        else:
+                            board[i, j] = board[x, y]
+                            board[i, j, 3] = 1
+                            board[i, j, 4] = turn
+                            board[x, y] = [0, 0, 0, 0, 0]
+                            return board
+                        board[i, j] = board[x, y]
+                        board[i, j, 2] += 1
+                        board[i, j, 4] = turn
+                        board[x, y] = [0, 0, 0, 0, 0]
+                    board[i, j] = board[x, y]
+                    board[i, j, 2] += 1
+                    board[i, j, 4] = turn
+                    board[x, y] = [0, 0, 0, 0, 0]
+                    return board
+
+def random_piece(board, turn):
+    movable_pieces = []
+    for i in range(8):
+        for j in range(8):
+            if board[i, j, 0] == turn%2 + 1:
+                if get_possible_moves(board, i, j) > 0:
+                    movable_pieces.append((i, j))
+    if len(movable_pieces) == 0:
+        return None
+    else:
+        return movable_pieces[random.randint(0, len(movable_pieces) - 1)]
+
+def random_move(board, x, y):
+    return random.randint(0, get_possible_moves(board, x, y))
+
+
+
+
+
 # print the board
 print_board(board)
-print(bishop_patern(board, 3, 3, 2))
-print(knight_patern(board, 3, 3, 2))
-board[7, 5] = [0, 0, 0, 0]
-board[7, 6] = [0, 0, 0, 0]
-board[7, 3] = [0, 0, 0, 0]
-board[7, 2] = [0, 0, 0, 0]
-board[7, 1] = [0, 0, 0, 0]
+print()
+print(get_patern(board, 7, 4))
+print_patern(get_patern(board, 7, 4))
+board[7, 5] = [0, 0, 0, 0, 0]
+board[7, 6] = [0, 0, 0, 0, 0]
+board[7, 3] = [0, 0, 0, 0, 0]
+board[7, 2] = [0, 0, 0, 0, 0]
+board[7, 1] = [0, 0, 0, 0, 0]
 
-print_patern(pawn_patern(board, 6, 4, 1, 0))
-print(get_possible_moves(board, 7, 4))
+print()
+print(get_patern(board, 6, 4))
+print_patern(get_patern(board, 7, 4))
+print(get_possible_moves(board, 6, 4))
+
+print()
+print_board(board=board)
+
+print()
+print(get_patern(board, 7, 4))
+print_patern(get_patern(board, 7, 4))
+print_board(move_piece(board, 7, 4, 2, turn=turn))
+print()
+print(get_patern(board, 7, 3))
+print_patern(get_patern(board, 7, 3))
+
+print()
+print(board[7, 3])
