@@ -780,7 +780,7 @@ def main(board, turn: int, moves):
             continue
         else:
             print_board(board, last_move, turn)
-            time.sleep(0.5)
+            time.sleep(0.1)
     print("Winner: ", readable_winner(get_winner(board)))
     print("Moves: ")
     for i in moves:
