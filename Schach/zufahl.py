@@ -504,6 +504,7 @@ def get_possible_moves(board, x, y):
         patern = queen_patern(board, x, y, board[x, y, 0])
     elif board[x, y, 1] == 6:
         patern = king_patern(board, x, y, board[x, y, 0], board[x, y, 2])
+    return np.count_nonzero(patern) - 1
 
 # print the board
 print_board(board)
@@ -516,4 +517,4 @@ board[7, 2] = [0, 0, 0, 0]
 board[7, 1] = [0, 0, 0, 0]
 
 print_patern(pawn_patern(board, 6, 4, 1, 0))
-print(get_possible_moves(board, 6, 4))
+print(get_possible_moves(board, 7, 4))
