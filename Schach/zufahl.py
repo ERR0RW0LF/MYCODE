@@ -506,6 +506,32 @@ def pawn_patern(board, x, y, color = 0):
                     patern[x + 1, y] = 1
     return patern
 
+# promote a pawn
+def promote_pawn(board, x, y, color, piece):
+    if color == 1:
+        if x == 0:
+            board[x, y, 1] = piece
+    elif color == 2:
+        if x == 7:
+            board[x, y, 1] = piece
+    return board
+
+# promote to random piece
+def promote_pawn_random(board, x, y, color):
+    if color == 1:
+        if x == 0:
+            board[x, y, 1] = random.randint(2, 5)
+            board[x, y, 2] = 0
+            board[x, y, 3] = 0
+            board[x, y, 4] = 0
+    elif color == 2:
+        if x == 7:
+            board[x, y, 1] = random.randint(2, 5)
+            board[x, y, 2] = 0
+            board[x, y, 3] = 0
+            board[x, y, 4] = 0
+    return board
+
 # print paterns readable
 def print_patern(patern):
     print("  a b c d e f g h")
@@ -664,14 +690,20 @@ def move_piece(board, x, y, move, turn, moves: list):
                             board[i, j, 3] = 1
                             board[i, j, 4] = turn
                             board[x, y] = [0, 0, 0, 0, 0]
+                            if board[i, j, 1] == 1:
+                                board = promote_pawn_random(board, i, j, board[i, j, 0])
                             return board, movement, last_move
                         board[i, j] = board[x, y]
                         board[i, j, 2] += 1
                         board[i, j, 4] = turn
+                        if board[i, j, 1] == 1:
+                            board = promote_pawn_random(board, i, j, board[i, j, 0])
                         board[x, y] = [0, 0, 0, 0, 0]
                     board[i, j] = board[x, y]
                     board[i, j, 2] += 1
                     board[i, j, 4] = turn
+                    if board[i, j, 1] == 1:
+                        board = promote_pawn_random(board, i, j, board[i, j, 0])
                     board[x, y] = [0, 0, 0, 0, 0]
                     return board, movement, last_move
 
@@ -700,6 +732,7 @@ def get_winner(board):
         for j in range(8):
             pieces = 0
             if board[i, j, 1] == 6 and board[i, j, 0] == 1:
+                wight_king = True
                 for k in range(8):
                     for l in range(8):
                         if board[k, l, 0] == 2 or board[k, l, 0] == 1:
@@ -717,6 +750,7 @@ def get_winner(board):
                     return 1
             can_move = False
             if board[i, j, 1] == 6 and board[i, j, 0] == 2:
+                black_king = True
                 for k in range(8):
                     for l in range(8):
                         if board[k, l, 0] == 1 or board[k, l, 0] == 2:
@@ -776,13 +810,14 @@ def main(board, turn: int, moves):
             continue
         else:
             print_board(board, last_move, turn)
-            time.sleep(0.1)
+            time.sleep(0.01)
     print("Winner: ", readable_winner(get_winner(board)))
     print("Moves: ")
     for i in moves:
         print(i)
     print(turn)
-    return board, turn, moves
+    winner = get_winner(board)
+    return board, turn, moves, winner
 
 # overwrite the board with the new board in the terminal
 def delete_last_lines(n=1):
@@ -837,7 +872,42 @@ if __name__ == "__main__":
     logging.info('Starting the game')
     turn = 0
     board = board_base
-    main(board, turn, movement)
+    winnes = []
+    turns = []
+    
+    
+    for i in range(100):
+        board, turn, movement, winner = main(board, turn, [])
+        winnes.append(winner)
+        turns.append(turn)
+        board = board_base
+        turn = 0
+        print("Game: ", i + 1)
+    
+    winnesW = 0
+    winnesB = 0
+    winnesD = 0
+    for i in winnes:
+        if i == 1:
+            winnesW += 1
+        elif i == 2:
+            winnesB += 1
+        elif i == 3:
+            winnesD += 1
+    
+    print("White wins: ", winnesW)
+    print("Black wins: ", winnesB)
+    print("Draws: ", winnesD)
+    print("Average turns: ", sum(turns) / len(turns))
+    
+    print("White wins: ", winnesW / len(winnes) * 100, "%")
+    print("Black wins: ", winnesB / len(winnes) * 100, "%")
+    print("Draws: ", winnesD / len(winnes) * 100, "%")
+    
+    #main(board, turn, movement)
+    
+    print('\u2654')
+    print('\u265A')
     
     #board = board_base
     #main(board, turn, movement)
