@@ -1,11 +1,8 @@
 from hmac import new
 from math import e, log
 import random
-from matplotlib.pylab import f
 from matplotlib.pyplot import pie
 import numpy as np
-from requests import get
-from torch import NoneType, rand
 import logging
 import time
 from colorama import Fore, Back, Style
