@@ -785,6 +785,7 @@ def main(board, turn: int, moves):
     print("Moves: ")
     for i in moves:
         print(i)
+    print(turn)
     return board, turn, moves
 
 # overwrite the board with the new board in the terminal
@@ -843,5 +844,5 @@ if __name__ == "__main__":
     board = board_base
     main(board, turn, movement)
     
-    board = board_base
-    main(board, turn, movement)
+    #board = board_base
+    #main(board, turn, movement)
