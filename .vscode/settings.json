@@ -1,5 +1,9 @@
 {
     "cSpell.words": [
         "satz"
+    ],
+    "accessibility.voice.speechTimeout": 1201
+    "accessibility.voice.keywordActivation": [
+        "inlineChat"
     ]
 }
