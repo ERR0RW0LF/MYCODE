@@ -2,5 +2,6 @@
     "cSpell.words": [
         "satz"
     ],
-    "accessibility.voice.speechTimeout": 1200
+    "accessibility.voice.speechTimeout": 1200,
+    "python.analysis.typeCheckingMode": "basic"
 }
