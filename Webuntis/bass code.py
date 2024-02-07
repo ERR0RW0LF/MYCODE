@@ -1,5 +1,6 @@
 from tkinter import W
 from numpy import less
+from torch import normal
 import webuntis
 import datetime
 import logging
@@ -14,7 +15,9 @@ strikethrough = '\033[09m'
 bold = '\033[01m'
 underline = '\033[04m'
 end = '\033[0m'
-
+irregularL = '\x1b[0;37;44m'
+cancelledL = '\x1b[0;37;41m'
+normalL = '\x1b[0m'
 
 # filter timetable output
 def filter_tt(tt):
@@ -108,14 +111,14 @@ def print_lessen(day: dict, weekday: int):
         print(' | ', i.time(), ' | ', end='')
         if i in day:
             if day[i][1] == 'cancelled':
-                print(strikethrough, day[i][0], end, ' | ', end='')
+                print(cancelledL, strikethrough, day[i][0], end, ' | ', end='')
             elif day[i][1] == 'irregular':
-                print(underline, day[i][0], end, ' | ', end='')
+                print(irregularL, underline, day[i][0], end, ' | ', end='')
             else:
-                print('', day[i][0], '  | ', end='')
+                print(normalL, '', day[i][0], end, ' | ', end='')
             print(day[i][1])
         else:
-            print('','--', '  | ')
+            print(normalL, '','--', '  | ')
 
 # print timetable
 def print_tt(tt):
