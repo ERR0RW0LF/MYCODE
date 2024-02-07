@@ -5,7 +5,8 @@
         "vscode": {
             "extensions": [
                 "GitHub.copilot",
-                "ms-vscode.vscode-speech"
+                "ms-vscode.vscode-speech",
+                "GitHub.copilot-chat"
             ]
         }
     }
