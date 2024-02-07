@@ -45,6 +45,41 @@ movement = []
 
 # print the board in a human readable format using chess unicode characters
 def print_board(board, last_move, turn):
+    """
+    Prints the chess board with the current state of the game.
+
+    Args:
+        board (numpy.ndarray): The chess board represented as a 3D numpy array.
+        last_move (str): The last move made in algebraic notation.
+        turn (int): The current turn number.
+
+    Returns:
+        None
+
+    Prints the chess board with the pieces represented by unicode characters.
+    The board is printed with row numbers and column letters for reference.
+    The last move and turn number are also displayed.
+
+    Example:
+        >>> board = np.zeros((8, 8, 4))
+        >>> last_move = "e2e4"
+        >>> turn = 1
+        >>> print_board(board, last_move, turn)
+          a b c d e f g h
+          ----------------
+        8|r n b q k b n r|
+        7|p p p p p p p p|
+        6|              |
+        5|              |
+        4|        P     |
+        3|              |
+        2|P P P P   P P P|
+        1|R N B Q K B N R|
+          ----------------
+          a b c d e f g h
+        Turn: 1
+    """
+    # Function implementation goes here
     if turn != 0:
         delete_last_lines(15)
     if len(last_move) > 0:
@@ -100,7 +135,24 @@ def print_board(board, last_move, turn):
 # 0 can't move there, 1 can move there, 2 can move there and take a piece, 3 is position of the piece, 4 (for the king) Castling position, 5 (for the pawn) en passant position
 
 # bishop patern
-def bishop_patern(board, x, y, color = 0):
+def bishop_patern(board, x, y, color=0):
+    """
+    Generates a pattern for a bishop piece on a chessboard.
+
+    Args:
+        board (numpy.ndarray): The chessboard represented as a 3D numpy array.
+        x (int): The x-coordinate of the bishop's position on the board.
+        y (int): The y-coordinate of the bishop's position on the board.
+        color (int, optional): The color of the bishop. Defaults to 0.
+
+    Returns:
+        numpy.ndarray: A 2D numpy array representing the bishop's movement pattern.
+            - 0: Empty square
+            - 1: Valid move
+            - 2: Capture move
+            - 3: Bishop's current position
+
+    """
     patern = np.zeros((8, 8))
     if color == 2:
         enemyColor = 1

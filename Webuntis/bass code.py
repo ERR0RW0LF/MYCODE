@@ -21,6 +21,16 @@ normalL = '\x1b[0m'
 
 # filter timetable output
 def filter_tt(tt):
+    """
+    Filters the timetable output to exclude specific subjects.
+
+    Parameters:
+    tt (list): The timetable containing lessons for each day.
+
+    Returns:
+    dict: The filtered timetable with lessons for each day.
+    """
+    faecher = {}
     for i in tt:
         for fach in i.subjects:
             untericht = fach.name
@@ -46,48 +56,20 @@ def filter_tt(tt):
 
 # group timetable by day and time and filter
 def group_tt(tt):
+    """
+    Groups the timetable by day and time.
+
+    Parameters:
+    tt (list): The timetable containing lessons for each day.
+
+    Returns:
+    tuple: A tuple containing dictionaries for each day with lessons grouped by time.
+    """
     Monday = {}
     Tuesday = {}
     Wednesday = {}
     Thursday = {}
     Friday = {}
-    # example imput for tt:
-    '''
-    {
-        datetime.datetime(2024, 2, 5, 11, 35): 'De', 
-        datetime.datetime(2024, 2, 5, 12, 25): 'De', 
-        datetime.datetime(2024, 2, 7, 7, 55): 'De', 
-        datetime.datetime(2024, 2, 7, 8, 45): 'De', 
-        datetime.datetime(2024, 2, 5, 10, 35): 'En', 
-        datetime.datetime(2024, 2, 8, 9, 45): 'En', 
-        datetime.datetime(2024, 2, 8, 10, 35): 'En', 
-        datetime.datetime(2024, 2, 5, 7, 55): 'Ek', 
-        datetime.datetime(2024, 2, 5, 8, 45): 'Ek', 
-        datetime.datetime(2024, 2, 7, 11, 35): 'Ma', 
-        datetime.datetime(2024, 2, 7, 12, 25): 'Ku', 
-        datetime.datetime(2024, 2, 9, 7, 55): 'Mu', 
-        datetime.datetime(2024, 2, 9, 8, 45): 'Mu', 
-        datetime.datetime(2024, 2, 5, 9, 45): 'Ma', 
-        datetime.datetime(2024, 2, 8, 7, 55): 'Ma', 
-        datetime.datetime(2024, 2, 8, 8, 45): 'Ma', 
-        datetime.datetime(2024, 2, 6, 9, 45): 'Ph', 
-        datetime.datetime(2024, 2, 6, 10, 35): 'Ph',
-        datetime.datetime(2024, 2, 8, 11, 35): 'Bi',
-        datetime.datetime(2024, 2, 8, 12, 25): 'Bi',
-        datetime.datetime(2024, 2, 6, 7, 55): 'Sp',
-        datetime.datetime(2024, 2, 6, 8, 45): 'Sp',
-        datetime.datetime(2024, 2, 7, 13, 40): 'Rb', 
-        datetime.datetime(2024, 2, 7, 14, 30): 'Rb', 
-        datetime.datetime(2024, 2, 9, 9, 45): 'rk', 
-        datetime.datetime(2024, 2, 9, 10, 35): 'rk', 
-        datetime.datetime(2024, 2, 7, 9, 45): 'la', 
-        datetime.datetime(2024, 2, 7, 10, 35): 'la', 
-        datetime.datetime(2024, 2, 9, 11, 35): 'la', 
-        datetime.datetime(2024, 2, 9, 12, 25): 'la', 
-        datetime.datetime(2024, 2, 6, 11, 35): 'Po', 
-        datetime.datetime(2024, 2, 6, 12, 25): 'Po'
-    }
-    '''
     for i in tt:
         if i.weekday() == 0:
             Monday[i] = tt[i]
@@ -104,6 +86,16 @@ def group_tt(tt):
 
 # Print lesson plan
 def print_lessen(day: dict, weekday: int):
+    """
+    Prints the lesson plan for a specific day.
+
+    Parameters:
+    day (dict): The dictionary containing lessons for the day.
+    weekday (int): The weekday index (0-4) for the day.
+
+    Returns:
+    None
+    """
     dayLessons = []
     for i in lessons:
         dayLessons.append(datetime.datetime.combine(WeekdaysDate[weekday], i))
@@ -122,6 +114,15 @@ def print_lessen(day: dict, weekday: int):
 
 # print timetable
 def print_tt(tt):
+    """
+    Prints the timetable for each day of the week.
+
+    Parameters:
+    tt (list): The timetable containing lessons for each day.
+
+    Returns:
+    None
+    """
     tt = filter_tt(tt)
     MondayS, TuesdayS, WednesdayS, ThursdayS, FridayS = group_tt(tt)
     print('Monday')
@@ -179,9 +180,6 @@ s.login()
 klasse = s.klassen().filter(name='9b')[0]  # schoolclass #1
 tt = s.timetable(klasse=klasse, start=Monday, end=Friday)
 
-
-
-
 print(klasse)
 print(filter_tt(tt))
 
@@ -191,7 +189,6 @@ print(Monday)
 print_lessen(Monday, 0)
 
 print_tt(tt)
-
 
 logging.info('IServ Logout...')
 s.logout()
