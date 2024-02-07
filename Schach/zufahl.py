@@ -5,7 +5,6 @@ from matplotlib.pyplot import pie
 import numpy as np
 import logging
 import time
-from colorama import Fore, Back, Style
 
 # board is a matrix 8x8x2 with 0, 1 or 2 in each cell (0: empty, 1: white, 2: black)
 # which piece is in the cell is determined by the second dimension of the matrix
@@ -832,7 +831,6 @@ def delete_last_lines(n=1):
 # a: DEBUG is for debugging, INFO is for information, WARNING is for warnings, ERROR is for errors, CRITICAL is for critical errors
 
 if __name__ == "__main__":
-    print(Style.RESET_ALL)
     logging.basicConfig(level=logging.WARNING)
     logging.info('Started')
     logging.info('Imported modules')
