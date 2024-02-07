@@ -1,3 +1,4 @@
+from calendar import c
 from hmac import new
 from math import e, log
 import random
@@ -44,7 +45,7 @@ movement = []
 
 
 # print the board in a human readable format using chess unicode characters
-def print_board(board, last_move, turn):
+def print_board(board, last_move, turn, color: int):
     """
     Prints the chess board with the current state of the game.
 
@@ -64,7 +65,7 @@ def print_board(board, last_move, turn):
         >>> board = np.zeros((8, 8, 4))
         >>> last_move = "e2e4"
         >>> turn = 1
-        >>> print_board(board, last_move, turn)
+        >>> print_board(board, last_move, turn, color = 1)
           a b c d e f g h
           ----------------
         8|r n b q k b n r|
@@ -81,9 +82,16 @@ def print_board(board, last_move, turn):
     """
     # Function implementation goes here
     if turn != 0:
-        delete_last_lines(15)
+        delete_last_lines(17)
     if len(last_move) > 0:
-        print("Last move: ", last_move)
+        print("Last move: ", color, ' ', last_move)
+    
+    print()
+    if color == 1:
+        colorWo = "White"
+    elif color == 2:
+        colorWo = "Black"
+    print('move from: ', colorWo)
     
     print()
     print("  a b c d e f g h")
@@ -208,7 +216,20 @@ def bishop_patern(board, x, y, color=0):
     return patern
 
 # knight patern
-def knight_patern(board, x, y, color = 0):
+def knight_patern(board, x, y, color=0):
+    """
+    Generates a pattern for the possible moves of a knight on a chessboard.
+
+    Parameters:
+    - board: numpy array representing the chessboard
+    - x: x-coordinate of the knight's position
+    - y: y-coordinate of the knight's position
+    - color: color of the knight (0 for neutral, 1 for white, 2 for black)
+
+    Returns:
+    - patern: numpy array representing the pattern of possible moves for the knight
+    """
+
     patern = np.zeros((8, 8))
     if color == 2:
         enemyColor = 1
@@ -294,7 +315,24 @@ def knight_patern(board, x, y, color = 0):
     return patern
 
 # rook patern
-def rook_patern(board, x, y, color = 0):
+def rook_patern(board, x, y, color=0):
+    """
+    Generates a pattern for a rook piece on a chessboard.
+
+    Args:
+        board (numpy.ndarray): The chessboard represented as a 3D numpy array.
+        x (int): The x-coordinate of the rook's position on the board.
+        y (int): The y-coordinate of the rook's position on the board.
+        color (int, optional): The color of the rook. Defaults to 0.
+
+    Returns:
+        numpy.ndarray: A 2D numpy array representing the rook's pattern on the board.
+            - 0: Empty square
+            - 1: Valid move
+            - 2: Capture move
+            - 3: Rook's current position
+    """
+    
     patern = np.zeros((8, 8))
     if color == 2:
         enemyColor = 1
@@ -350,7 +388,31 @@ def rook_patern(board, x, y, color = 0):
     return patern
 
 # queen patern
-def queen_patern(board, x, y, color = 0):
+import numpy as np
+
+def queen_patern(board, x, y, color=0):
+    """
+    Generates a pattern for the queen piece on a chessboard.
+
+    Parameters:
+    - board (numpy.ndarray): The chessboard represented as a 3D numpy array.
+    - x (int): The x-coordinate of the queen's position on the board.
+    - y (int): The y-coordinate of the queen's position on the board.
+    - color (int): The color of the queen (0 for neutral, 1 for white, 2 for black).
+
+    Returns:
+    - patern (numpy.ndarray): The pattern generated for the queen piece on the chessboard.
+
+    The pattern is represented as a 2D numpy array with the same shape as the chessboard.
+    Each element in the pattern represents the possible moves for the queen from its current position.
+    - 0: The queen cannot move to this position.
+    - 1: The queen can move to this position.
+    - 2: The queen can capture an enemy piece at this position.
+    - 3: The queen's current position.
+
+    Note: The pattern is generated based on the current state of the chessboard and the queen's color.
+    """
+
     patern = np.zeros((8, 8))
     if color == 2:
         enemyColor = 1
@@ -358,7 +420,9 @@ def queen_patern(board, x, y, color = 0):
         enemyColor = 2
     else:
         return patern
+
     patern[x, y] = 3
+
     for i in range(1, 8):
         if x + i < 8:
             if board[x + i, y, 0] == 0:
@@ -370,6 +434,7 @@ def queen_patern(board, x, y, color = 0):
                 break
         else:
             break
+
     for i in range(1, 8):
         if x - i >= 0:
             if board[x - i, y, 0] == 0:
@@ -381,6 +446,7 @@ def queen_patern(board, x, y, color = 0):
                 break
         else:
             break
+
     for i in range(1, 8):
         if y + i < 8:
             if board[x, y + i, 0] == 0:
@@ -392,6 +458,7 @@ def queen_patern(board, x, y, color = 0):
                 break
         else:
             break
+
     for i in range(1, 8):
         if y - i >= 0:
             if board[x, y - i, 0] == 0:
@@ -403,6 +470,7 @@ def queen_patern(board, x, y, color = 0):
                 break
         else:
             break
+
     for i in range(1, 8):
         if x + i < 8 and y + i < 8:
             if board[x + i, y + i, 0] == 0:
@@ -414,6 +482,7 @@ def queen_patern(board, x, y, color = 0):
                 break
         else:
             break
+
     for i in range(1, 8):
         if x - i >= 0 and y - i >= 0:
             if board[x - i, y - i, 0] == 0:
@@ -425,6 +494,7 @@ def queen_patern(board, x, y, color = 0):
                 break
         else:
             break
+
     for i in range(1, 8):
         if x + i < 8 and y - i >= 0:
             if board[x + i, y - i, 0] == 0:
@@ -436,6 +506,7 @@ def queen_patern(board, x, y, color = 0):
                 break
         else:
             break
+
     for i in range(1, 8):
         if x - i >= 0 and y + i < 8:
             if board[x - i, y + i, 0] == 0:
@@ -447,10 +518,31 @@ def queen_patern(board, x, y, color = 0):
                 break
         else:
             break
+
     return patern
 
 # king patern
-def king_patern(board, x, y, color = 0, moved = 0):
+def king_patern(board, x, y, color=0, moved=0):
+    """
+    Generates a pattern for the possible moves of a king on a chessboard.
+
+    Args:
+        board (numpy.ndarray): The chessboard represented as a 3D numpy array.
+        x (int): The x-coordinate of the king's position.
+        y (int): The y-coordinate of the king's position.
+        color (int, optional): The color of the king. 0 for no color, 1 for white, 2 for black. Defaults to 0.
+        moved (int, optional): Indicates whether the king has moved before. 0 for not moved, 1 for moved. Defaults to 0.
+
+    Returns:
+        numpy.ndarray: A 2D numpy array representing the pattern of possible moves for the king.
+            - 0: The king's current position.
+            - 1: A valid move for the king.
+            - 2: A valid move that captures an enemy piece.
+            - 3: King's current position.
+            - 4: Special move (castling).
+
+    """
+    
     patern = np.zeros((8, 8))
     if color == 2:
         enemyColor = 1
@@ -514,7 +606,31 @@ def king_patern(board, x, y, color = 0, moved = 0):
     return patern
 
 # pawn patern
-def pawn_patern(board, x, y, color = 0):
+def pawn_patern(board, x, y, color=0):
+    """
+    Generates a pattern for a pawn's possible moves on a chessboard.
+
+    Args:
+        board (numpy.ndarray): The chessboard represented as a 3D numpy array.
+        x (int): The x-coordinate of the pawn's position on the chessboard.
+        y (int): The y-coordinate of the pawn's position on the chessboard.
+        color (int, optional): The color of the pawn. 0 for neutral, 1 for white, 2 for black. Defaults to 0.
+
+    Returns:
+        numpy.ndarray: A 2D numpy array representing the pattern of possible moves for the pawn.
+
+    Note:
+        - The pattern array is initialized with zeros.
+        - The pattern array is modified to indicate possible moves for the pawn.
+        - The pattern array uses the following values:
+            - 0: Empty square
+            - 1: Valid move
+            - 2: Capture move
+            - 3: Current position of the pawn
+            - 5: Special move (e.g., double pawn move)
+
+    """
+    
     patern = np.zeros((8, 8))
     if color == 2:
         enemyColor = 1
@@ -560,6 +676,19 @@ def pawn_patern(board, x, y, color = 0):
 
 # promote a pawn
 def promote_pawn(board, x, y, color, piece):
+    """
+    Promotes a pawn on the chess board.
+
+    Args:
+        board (numpy.ndarray): The chess board.
+        x (int): The x-coordinate of the pawn.
+        y (int): The y-coordinate of the pawn.
+        color (int): The color of the pawn (1 for white, 2 for black).
+        piece (int): The piece to promote the pawn to.
+
+    Returns:
+        numpy.ndarray: The updated chess board.
+    """
     if color == 1:
         if x == 0:
             board[x, y, 1] = piece
@@ -570,6 +699,18 @@ def promote_pawn(board, x, y, color, piece):
 
 # promote to random piece
 def promote_pawn_random(board, x, y, color):
+    """
+    Promotes a pawn on the chess board randomly.
+
+    Args:
+        board (numpy.ndarray): The chess board represented as a 3D numpy array.
+        x (int): The x-coordinate of the pawn.
+        y (int): The y-coordinate of the pawn.
+        color (int): The color of the pawn (1 for white, 2 for black).
+
+    Returns:
+        numpy.ndarray: The updated chess board after promoting the pawn.
+    """
     if color == 1:
         if x == 0:
             board[x, y, 1] = random.randint(2, 5)
@@ -586,6 +727,15 @@ def promote_pawn_random(board, x, y, color):
 
 # print paterns readable
 def print_patern(patern):
+    """
+    Prints the given pattern.
+
+    Args:
+        patern (list or any): The pattern to be printed. It can be a list or any other type.
+
+    Returns:
+        None
+    """
     print("  a b c d e f g h")
     print("  -----------------")
     if type(patern) == list:
@@ -616,6 +766,27 @@ def print_patern(patern):
 
 # get number of all possible moves for a piece on the board
 def get_possible_moves(board, x, y):
+    """
+    Calculates the number of possible moves for a given piece on the chessboard.
+
+    Parameters:
+    - board: numpy array representing the chessboard
+    - x: x-coordinate of the piece
+    - y: y-coordinate of the piece
+
+    Returns:
+    - count: number of possible moves for the piece
+
+    Note:
+    - The board is a 3-dimensional numpy array where the first dimension represents the x-coordinate,
+      the second dimension represents the y-coordinate, and the third dimension represents the piece type,
+      player, and additional information.
+    - The piece type is represented by the value in the third dimension at index 0.
+    - The player is represented by the value in the third dimension at index 1.
+    - Additional information about the piece (e.g., whether it has moved) is represented by the value in the third dimension at index 2.
+    - The count of possible moves is calculated based on the piece type and its current position on the board.
+
+    """
     if board[x, y, 1] == 1:
         patern = pawn_patern(board, x, y, board[x, y, 0])
     elif board[x, y, 1] == 2:
@@ -632,6 +803,18 @@ def get_possible_moves(board, x, y):
 
 # get the patern for a piece on the board
 def get_patern(board, x, y):
+    """
+    Returns the pattern for the piece at the given position on the board.
+
+    Parameters:
+    - board: The chess board.
+    - x: The x-coordinate of the piece.
+    - y: The y-coordinate of the piece.
+
+    Returns:
+    - The pattern for the piece at the given position.
+
+    """
     if board[x, y, 1] == 1:
         return pawn_patern(board, x, y, board[x, y, 0])
     elif board[x, y, 1] == 2:
@@ -647,6 +830,25 @@ def get_patern(board, x, y):
 
 # move a piece on the board based on the patern and the number of the move (0 is the original position, 1 is the first possible position in the patern from left to right and up to down, 2 is the second possible position, ...) and return the new board
 def move_piece(board, x, y, move, turn, moves: list):
+    """
+    Moves a piece on the chess board.
+
+    Args:
+        board (numpy.ndarray): The chess board represented as a 3D numpy array.
+        x (int): The x-coordinate of the piece to be moved.
+        y (int): The y-coordinate of the piece to be moved.
+        move (int): The number of moves to be made.
+        turn (int): The current turn number.
+        moves (list): The list of previous moves.
+
+    Returns:
+        tuple: A tuple containing the updated board, the updated list of moves, and the last move made.
+
+    Raises:
+        None
+
+    """
+    
     pattern = get_patern(board, x, y)
     last_move = ""
     if move == 0:
@@ -759,8 +961,21 @@ def move_piece(board, x, y, move, turn, moves: list):
                     board[x, y] = [0, 0, 0, 0, 0]
                     return board, movement, last_move
 
+import random
+
 def random_piece(board, turn):
-    
+    """
+    Selects a random movable piece from the given chess board for the specified turn.
+
+    Parameters:
+    - board (numpy.ndarray): The chess board represented as a 3D numpy array.
+    - turn (int): The current turn number.
+
+    Returns:
+    - tuple or None: A tuple representing the coordinates of the randomly selected movable piece,
+      or None if there are no movable pieces.
+
+    """
     movable_pieces = []
     for i in range(8):
         for j in range(8):
@@ -773,10 +988,35 @@ def random_piece(board, turn):
         return movable_pieces[random.randint(0, len(movable_pieces) - 1)]
 
 def random_move(board, x, y):
+    """
+    Returns a random move for the given board and position.
+
+    Parameters:
+    board (list): The chess board.
+    x (int): The x-coordinate of the position.
+    y (int): The y-coordinate of the position.
+
+    Returns:
+    int: A random move index.
+
+    """
     return random.randint(0, get_possible_moves(board, x, y) - 1)
 
 # determine the winner of the game
 def get_winner(board):
+    """
+    Determines the winner of a chess game based on the current state of the board.
+
+    Args:
+        board (numpy.ndarray): The chess board represented as a 3D numpy array.
+
+    Returns:
+        int: The winner of the game. Possible return values:
+            - 0: The game is still ongoing.
+            - 1: White player wins.
+            - 2: Black player wins.
+            - 3: The game is a draw.
+    """
     pieces = 0
     wight_king = False
     black_king = False
@@ -806,6 +1046,20 @@ def get_winner(board):
 
 # readable winner
 def readable_winner(winner):
+    """
+    Converts the winner value to a readable string representation.
+
+    Args:
+        winner (int): The winner value. Possible values are:
+            - 0: No winner
+            - 1: White wins
+            - 2: Black wins
+            - 3: Draw
+
+    Returns:
+        str: The readable string representation of the winner.
+
+    """
     if winner == 0:
         return "No winner"
     elif winner == 1:
@@ -817,7 +1071,18 @@ def readable_winner(winner):
 
 # round 
 def round(board, turn, moves):
-    new_board = np.array(board)
+    """
+    Perform a round of the chess game.
+
+    Args:
+        board (numpy.ndarray): The current state of the chess board.
+        turn (int): The current turn number.
+        moves (str): The string representation of the previous moves.
+
+    Returns:
+        tuple: A tuple containing the updated board, turn number, moves, and the last move made.
+
+    """
     # q: how can i check if two numpy arrays with 3 dimensions are equal?
     # a: np.array_equal(array1, array2)
     
@@ -826,33 +1091,67 @@ def round(board, turn, moves):
         return board, turn, moves, ""
     move = random_move(board, piece[0], piece[1])
     move_out = move_piece(board, piece[0], piece[1], move, turn, moves)
-    new_board = np.array(move_out[0])
+    board = np.array(move_out[0])
     moves = move_out[1]
     last_move = move_out[2]
-    board = new_board
     return board, turn + 1, moves, last_move
 
 # main function
 def main(board, turn: int, moves):
-    print('\n' * 15)
-    while get_winner(board) == 0:
+    """
+    Runs the main game loop for the chess game.
+
+    Args:
+        board (list): The current state of the chess board.
+        turn (int): The current turn number.
+        moves (list): The list of moves made so far.
+
+    Returns:
+        tuple: A tuple containing the updated board, turn, moves, and the winner of the game.
+    """
+    #print('\n' * 17)
+    r = 0
+    winner = get_winner(board)
+    color = 0
+    while winner == 0:
+        if turn % 2 + 1 == 1:
+            color = 1
+        else:
+            color = 2
         old_turn = turn
         board, turn, moves, last_move = round(board, turn, moves)
         if old_turn == turn or last_move == "":
-            continue
+            r += 1
+            print_board(board, str(r), turn, color=color)
+            time.sleep(0.0005)
+            winner = get_winner(board)
         else:
-            print_board(board, last_move, turn)
-            time.sleep(0.01)
+            r = 0
+            print_board(board, last_move, turn, color=color)
+            time.sleep(0.0005)
+            winner = get_winner(board)
+        
     print("Winner: ", readable_winner(get_winner(board)))
-    print("Moves: ")
-    for i in moves:
-        print(i)
+    #print("Moves: ")
+    print()
+    #for i in moves:
+    #    print(i)
     print(turn)
+    print('\n' * 17)
     winner = get_winner(board)
     return board, turn, moves, winner
 
 # overwrite the board with the new board in the terminal
 def delete_last_lines(n=1):
+    """
+    Deletes the last 'n' lines from the console output.
+
+    Parameters:
+    - n (int): The number of lines to delete. Default is 1.
+
+    Returns:
+    None
+    """
     CURSOR_UP_ONE = '\x1b[1A'
     ERASE_LINE = '\x1b[2K'
     for _ in range(n):
@@ -897,23 +1196,42 @@ def delete_last_lines(n=1):
 # q: what is the difference between the levels of logging?
 # a: DEBUG is for debugging, INFO is for information, WARNING is for warnings, ERROR is for errors, CRITICAL is for critical errors
 
+# If the current module is being executed as the main script
 if __name__ == "__main__":
+    # Set up the logging configuration to display warning messages and above
     logging.basicConfig(level=logging.WARNING)
+    
+    # Log that the script has started
     logging.info('Started')
+    
+    # Log that the required modules have been imported
     logging.info('Imported modules')
+    
+    # Log that the game is starting
     logging.info('Starting the game')
+    
+    # Initialize the game variables
     turn = 0
     board = board_base
     winnes = []
     turns = []
     
+    random.seed(random.random())
     
-    for i in range(100):
+    # Play the game 1000 times
+    for i in range(50):
+        # Call the main function to play a single game and get the updated board, turn, movement, and winner
         board, turn, movement, winner = main(board, turn, [])
+        
+        # Append the winner and turn to the respective lists
         winnes.append(winner)
         turns.append(turn)
+        
+        # Reset the board and turn for the next game
         board = board_base
         turn = 0
+        
+        # Print the game number
         print("Game: ", i + 1)
     
     winnesW = 0
@@ -927,19 +1245,60 @@ if __name__ == "__main__":
         elif i == 3:
             winnesD += 1
     
+    # Print the statistics of the games
     print("White wins: ", winnesW)
     print("Black wins: ", winnesB)
     print("Draws: ", winnesD)
     print("Average turns: ", sum(turns) / len(turns))
     
+    # Print the percentage of wins for each player
+    print("White wins: ", winnesW / len(winnes) * 100, "%")
+    print("Black wins: ", winnesB / len(winnes) * 100, "%")
+    print("Draws: ", winnesD / len(winnes) * 100, "%")
+    time.sleep(1)
+    print()
+    print('---------------------------------')
+    print()
+    time.sleep(5)
+    
+    for i in range(50):
+        # Call the main function to play a single game and get the updated board, turn, movement, and winner
+        board, turn, movement, winner = main(board, turn, [])
+        
+        # Append the winner and turn to the respective lists
+        winnes.append(winner)
+        turns.append(turn)
+        
+        # Reset the board and turn for the next game
+        board = board_base
+        turn = 0
+        
+        # Print the game number
+        print("Game: ", i + 1)
+    
+    # Count the number of wins for each player and draws
+    winnesW = 0
+    winnesB = 0
+    winnesD = 0
+    for i in winnes:
+        if i == 1:
+            winnesW += 1
+        elif i == 2:
+            winnesB += 1
+        elif i == 3:
+            winnesD += 1
+    
+    # Print the statistics of the games
+    print("White wins: ", winnesW)
+    print("Black wins: ", winnesB)
+    print("Draws: ", winnesD)
+    print("Average turns: ", sum(turns) / len(turns))
+    
+    # Print the percentage of wins for each player
     print("White wins: ", winnesW / len(winnes) * 100, "%")
     print("Black wins: ", winnesB / len(winnes) * 100, "%")
     print("Draws: ", winnesD / len(winnes) * 100, "%")
     
-    #main(board, turn, movement)
-    
-    print('\u2654')
-    print('\u265A')
-    
-    #board = board_base
-    #main(board, turn, movement)
+    # Print the Unicode representation of the white and black king pieces
+    print('\u2654')  # Black king
+    print('\u265A')  # White king
