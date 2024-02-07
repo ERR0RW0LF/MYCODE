@@ -45,14 +45,17 @@ try:
     thursday = monday + datetime.timedelta(days=3)
     friday = monday + datetime.timedelta(days=4)
     
-    erstsFach = datetime.time(hour=7, minute=55)
+    '''erstsFach = datetime.time(hour=7, minute=55)
     zweitesFach = datetime.time(hour=8, minute=45)
     drittesFach = datetime.time(hour=9, minute=45)
     viertesFach = datetime.time(hour=10, minute=35)
     fuenftesFach = datetime.time(hour=11, minute=35)
     saextesFach = datetime.time(hour=12, minute=25)
     siebtesFach = datetime.time(hour=13, minute=40)
-    achtesFach = datetime.time(hour=14, minute=30)
+    achtesFach = datetime.time(hour=14, minute=30)'''
+    
+    stunde1 = datetime.time(hour=7, minute=55)
+    stunde2 = datetime.time(hour=8, minute=45)
     
     mondayFaecher = {}
     tuesdayFaecher = {}
@@ -157,7 +160,10 @@ try:
         i = 0
         
         webUntis_draw.rectangle((0, 0, 250, 122), fill= 255)
-        for i in range(0, 6):
+        
+        
+        
+        '''for i in range(0, 6):
             webUntis_draw.text((0, i*15), text='|', font= font15, fill= 0)
             webUntis_draw.text((20, i*15), text= mondayFaecher.get(list(mondayFaecher)[i]), font= font15, fill= 0)
             webUntis_draw.text((40, i*15), text='|', font= font15, fill= 0)
@@ -192,7 +198,7 @@ try:
         webUntis_draw.text((140, i*15), text= thursdayFaecher.get(list(thursdayFaecher)[i]), font= font15, fill= 0)
         webUntis_draw.text((160, i*15), text='|', font= font15, fill= 0)
         webUntis_draw.text((180, i*15), text='//', font= font15, fill= 0)
-        webUntis_draw.text((200, i*15), text='|', font= font15, fill= 0)
+        webUntis_draw.text((200, i*15), text='|', font= font15, fill= 0)'''
         
         epd.displayPartial(epd.getbuffer(webUntis_image))
         num = num + 1
