@@ -728,44 +728,32 @@ def get_winner(board):
     pieces = 0
     wight_king = False
     black_king = False
+    can_move_white = False
+    can_move_black = False
     for i in range(8):
         for j in range(8):
             pieces = 0
             if board[i, j, 1] == 6 and board[i, j, 0] == 1:
                 wight_king = True
-                for k in range(8):
-                    for l in range(8):
-                        if board[k, l, 0] == 2 or board[k, l, 0] == 1:
-                            pieces += 1
-                        if board[k, l, 0] == 2 and board[k, l, 1] == 6:
-                            black_king = True
-                        elif board[k, l, 0] == 2:
-                            if get_possible_moves(board, k, l) > 0:
-                                can_move = True
-                if pieces <= 4:
-                    return 3
-                elif not can_move:
-                    return 1
-                elif black_king == False:
-                    return 1
             can_move = False
             if board[i, j, 1] == 6 and board[i, j, 0] == 2:
                 black_king = True
-                for k in range(8):
-                    for l in range(8):
-                        if board[k, l, 0] == 1 or board[k, l, 0] == 2:
-                            pieces += 1
-                        if board[k, l, 0] == 1 and board[k, l, 1] == 6:
-                            wight_king = True
-                        elif board[k, l, 0] == 2:
-                            if get_possible_moves(board, k, l) > 0:
-                                can_move = True
-                if pieces <= 4:
-                    return 3
-                elif not can_move:
-                    return 2
-                elif wight_king == False:
-                    return 2
+            if board[i, j, 0] == 0:
+                continue
+            if board[i, j, 0] == 1:
+                if get_possible_moves(board, i, j) > 0:
+                    can_move_white = True
+            if board[i, j, 0] == 2:
+                if get_possible_moves(board, i, j) > 0:
+                    can_move_black = True
+            if wight_king == False and black_king == False:
+                return 3
+            if wight_king == True and black_king == False:
+                return 1
+            if wight_king == False and black_king == True:
+                return 2
+            if wight_king == True and black_king == True:
+                return 0
     if wight_king == True and black_king == True:
         return 0
     return 0
