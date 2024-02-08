@@ -1233,6 +1233,7 @@ if __name__ == "__main__":
         
         # Print the game number
         print("Game: ", i + 1)
+        random.seed(random.random())
     
     winnesW = 0
     winnesB = 0
@@ -1275,6 +1276,7 @@ if __name__ == "__main__":
         
         # Print the game number
         print("Game: ", i + 1)
+        random.seed(random.random())
     
     # Count the number of wins for each player and draws
     winnesW = 0
