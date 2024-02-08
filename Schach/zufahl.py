@@ -1291,6 +1291,7 @@ if __name__ == "__main__":
             winnesD += 1
     
     # Print the statistics of the games
+    print('Games: ', len(winnes))
     print("White wins: ", winnesW)
     print("Black wins: ", winnesB)
     print("Draws: ", winnesD)
