@@ -1,6 +1,3 @@
-from tkinter import W
-from numpy import less
-from torch import normal
 import webuntis
 import datetime
 import logging
