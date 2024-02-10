@@ -1234,6 +1234,7 @@ if __name__ == "__main__":
         
         # Print the game number
         print("Game: ", i + 1)
+        random.seed(random.random())
     
     winnesW = 0
     winnesB = 0
@@ -1263,6 +1264,7 @@ if __name__ == "__main__":
     time.sleep(5)
     board_base = board_base
     
+    # Play the game 1000 times
     for i in range(50):
         # Call the main function to play a single game and get the updated board, turn, movement, and winner
         board, turn, movement, winner = main(board, turn, [])
@@ -1278,8 +1280,8 @@ if __name__ == "__main__":
         
         # Print the game number
         print("Game: ", i + 1)
+        random.seed(random.random())
     
-    # Count the number of wins for each player and draws
     winnesW = 0
     winnesB = 0
     winnesD = 0
@@ -1292,6 +1294,7 @@ if __name__ == "__main__":
             winnesD += 1
     
     # Print the statistics of the games
+    print('Games: ', len(winnes))
     print("White wins: ", winnesW)
     print("Black wins: ", winnesB)
     print("Draws: ", winnesD)
