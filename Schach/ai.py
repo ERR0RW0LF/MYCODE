@@ -2,11 +2,192 @@ from calendar import c
 from hmac import new
 from math import e, log
 import random
+from re import T
 from matplotlib.pyplot import pie
 import numpy as np
 import logging
 import time
+from requests import get
+#import keras
+import tensorflow as tf
+from tensorflow import keras
 
+# load the models if they are available and if not create them and save them
+def test_gpu():
+    """
+    Tests if a GPU is available for use with TensorFlow.
+
+    Returns:
+    - None
+
+    Prints a message indicating whether a GPU is available for use with TensorFlow.
+    """
+    if tf.test.is_gpu_available():
+        print("Using GPU")
+    else:
+        print("Using CPU")
+
+# create_model() creates a model for the white and black player and returns them input (8, 8, 5) output which piece to move and where to move it in the format [x, y, x, y] (0-7) (0-7) (0-7) (0-7)
+def create_model():
+    """
+    Creates a model for the white and black player and returns them.
+
+    Returns:
+    - model: The model for the white and black player.
+
+    The model is a convolutional neural network with 5 layers.
+    The input shape is (8, 8, 5) and the output shape is (8, 8, 8, 8).
+    """
+    model = keras.Sequential([
+        keras.layers.Conv2D(64, (3, 3), activation='relu', input_shape=(8, 8, 5)),
+        keras.layers.MaxPooling2D((2, 2)),
+        keras.layers.Conv2D(64, (3, 3), activation='relu'),
+        keras.layers.MaxPooling2D((2, 2)),
+        keras.layers.Flatten(),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(64, activation='relu'),
+        # output layer
+        keras.layers.Dense(8, activation='softmax')
+    ])
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    return model
+
+# create_model_evaluation() creates a model for the evaluation of the current state of the game and returns it input (8, 8, 5) output the evaluation of the current state of the game
+def create_model_evaluation():
+    """
+    Creates a model for the evaluation of the current state of the game and returns it.
+
+    Returns:
+    - model: The model for the evaluation of the current state of the game.
+
+    The model is a convolutional neural network with 5 layers.
+    The input shape is (8, 8, 5) and the output shape is (1, 1, 1).
+    """
+    model = keras.Sequential([
+        keras.layers.Conv2D(64, (3, 3), activation='relu', input_shape=(8, 8, 5)),
+        keras.layers.MaxPooling2D((2, 2)),
+        keras.layers.Conv2D(64, (3, 3), activation='relu'),
+        keras.layers.MaxPooling2D((2, 2)),
+        keras.layers.Flatten(),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(64, activation='relu'),
+        keras.layers.Dense(64, activation='relu'),
+        # output layer
+        keras.layers.Dense(1, activation='softmax')
+    ])
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    return model
+
+
+# training loop for all models using reinforcement learning
+def train_model(model_white, model_black, model_evaluation, games=1000):
+    """
+    Trains the models for the white and black player and the evaluation model using reinforcement learning.
+
+    Args:
+    - model_white: The model for the white player.
+    - model_black: The model for the black player.
+    - model_evaluation: The evaluation model.
+    - games: The number of games to play for training. Defaults to 1000.
+
+    Returns:
+    - model_white: The trained model for the white player.
+    - model_black: The trained model for the black player.
+    - model_evaluation: The trained evaluation model.
+
+    The models are trained using reinforcement learning.
+    The models are trained to play chess using the Monte Carlo Tree Search algorithm.
+    """
+    for i in range(games):
+        board = np.zeros((8, 8, 5))
+        turn = 0
+        while True:
+            valid_move = False
+            while valid_move == False:
+                if turn % 2 == 0:
+                    move = keras.mcts(board, model_white, model_evaluation)
+                else:
+                    move = keras.mcts(board, model_black, model_evaluation)
+            board = move(board, move)
+            winner = get_winner(board)
+            if winner != 0:
+                # reward the models based on the winner
+                if winner == 1:
+                    rewardBlack = -1
+                    rewardWhite = 1
+                elif winner == 2:
+                    rewardBlack = 1
+                    rewardWhite = -1
+                else:
+                    rewardBlack = 0
+                    rewardWhite = 0
+                break
+            turn += 1
+        if i % 100 == 0:
+            print("Game", i, "completed")
+        model_black = keras.train_model(model_black, board, rewardBlack)
+        model_white = keras.train_model(model_white, board, rewardWhite)
+        model_evaluation = keras.train_model_evaluation(model_evaluation, board, rewardWhite)
+    return model_white, model_black, model_evaluation
+
+# initialize the models for white and black and an evaluation model
+def initialize_models():
+    """
+    Initializes the models for white and black and an evaluation model.
+
+    Returns:
+    - model_white: The model for the white player.
+    - model_black: The model for the black player.
+    - model_evaluation: The evaluation model.
+
+    If the models are available, they are loaded from the disk.
+    If the models are not available, they are created and saved to the disk.
+    """
+    try:
+        model_white = keras.models.load_model("model_white")
+        model_black = keras.models.load_model("model_black")
+        model_evaluation = keras.models.load_model("model_evaluation")
+    except:
+        model_white = create_model()
+        model_black = create_model()
+        model_evaluation = create_model_evaluation()
+        model_white.save("model_white")
+        model_black.save("model_black")
+        model_evaluation.save("model_evaluation")
+    return model_white, model_black, model_evaluation
+
+
+# check_mate() checks if the game is over
+def check_mate(board, color):
+    """
+    Checks if the game is over.
+
+    Args:
+    - board: The current state of the chessboard.
+    - color: The color of the player to check for checkmate.
+
+    Returns:
+    - True if the game is over, False otherwise.
+
+    The game is over if the player of the given color is in checkmate.
+    """
+    winner = 0
+    if get_winner(board, color) == 0:
+        return False
+    else:
+        return True
+    return False
 
 # board is a matrix 8x8x2 with 0, 1 or 2 in each cell (0: empty, 1: white, 2: black)
 # which piece is in the cell is determined by the second dimension of the matrix
@@ -1158,6 +1339,17 @@ def delete_last_lines(n=1):
     for _ in range(n):
         print(CURSOR_UP_ONE + ERASE_LINE, end='')
 
+# check if a move is valid
+def is_valid_move(board, x, y, newX, newY):
+    patern = get_patern(board, x, y)
+    if patern[newX, newY] == 1 or patern[newX, newY] == 2 or patern[newX, newY] == 4 or patern[newX, newY] == 5:
+        return True
+    elif patern[newX, newY] == 3:
+        return False
+    else:
+        return False
+
+
 
 # print the board
 #print_board(board, moves=movement, turn=turn)
@@ -1199,6 +1391,10 @@ def delete_last_lines(n=1):
 
 # If the current module is being executed as the main script
 if __name__ == "__main__":
+    tf.config.list_physical_devices('GPU')
+    test_gpu()
+    model_white, model_black, model_evaluation = initialize_models()
+    exit()
     # Set up the logging configuration to display warning messages and above
     logging.basicConfig(level=logging.WARNING)
     
