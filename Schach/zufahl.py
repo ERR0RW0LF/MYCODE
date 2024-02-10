@@ -1123,13 +1123,13 @@ def main(board, turn: int, moves):
         if old_turn == turn or last_move == "":
             r += 1
             print_board(board, str(r), turn, color=color)
-            time.sleep(0.0005)
-            winner = get_winner(board)
+            
         else:
             r = 0
             print_board(board, last_move, turn, color=color)
-            time.sleep(0.0005)
-            winner = get_winner(board)
+        
+        time.sleep(0.00001)
+        winner = get_winner(board)
         
     print("Winner: ", readable_winner(get_winner(board)))
     #print("Moves: ")
@@ -1228,6 +1228,7 @@ if __name__ == "__main__":
         turns.append(turn)
         
         # Reset the board and turn for the next game
+        board_base = board_base
         board = board_base
         turn = 0
         
@@ -1260,6 +1261,7 @@ if __name__ == "__main__":
     print('---------------------------------')
     print()
     time.sleep(5)
+    board_base = board_base
     
     for i in range(50):
         # Call the main function to play a single game and get the updated board, turn, movement, and winner
@@ -1270,6 +1272,7 @@ if __name__ == "__main__":
         turns.append(turn)
         
         # Reset the board and turn for the next game
+        board_base = board_base
         board = board_base
         turn = 0
         
