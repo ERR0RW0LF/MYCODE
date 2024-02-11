@@ -144,10 +144,10 @@ def train_model(model_white, model_black, model_evaluation, games=1000):
                 if moved[0].all() == board.all():
                     if turn % 2 == 0:
                         rewardWhite = -1
-                        model_white = keras.train_model(model_white, board, rewardWhite)
+                        model_white.fit(model_white, board, rewardWhite)
                     elif turn % 2 == 1:
                         rewardBlack = -1
-                        model_black = keras.train_model(model_black, board, rewardBlack)
+                        model_black.fit(model_black, board, rewardBlack)
                     continue
                 else:
                     if turn % 2 == 0:
@@ -1380,11 +1380,12 @@ def delete_last_lines(n=1):
 
 # check if a move is valid
 def is_valid_move(board, x, y, newX, newY):
-    patern = get_patern(board, x, y)
+    patern = get_patern(board, x, y)  # Assuming get_pattern is the function that returns the pattern
+    if patern is None:
+        print("Pattern is None. Returning False.")
+        return False
     if patern[newX, newY] == 1 or patern[newX, newY] == 2 or patern[newX, newY] == 4 or patern[newX, newY] == 5:
         return True
-    elif patern[newX, newY] == 3:
-        return False
     else:
         return False
 
@@ -1406,6 +1407,10 @@ def move_piece_ai(board, x, y, newX, newY, turn):
         tuple: A tuple containing the updated board, the updated list of moves, and the last move made.
 
     """
+    x = int(x)
+    y = int(y)
+    newX = int(newX)
+    newY = int(newY)
     pattern = get_patern(board, x, y)
     last_move = ""
     if is_valid_move(board, x, y, newX, newY) == False:
