@@ -57,7 +57,7 @@ def create_model():
         keras.layers.Dense(64, activation='relu'),
         keras.layers.Dense(64, activation='relu'),
         # output layer
-        keras.layers.Dense(8, activation='softmax')
+        keras.layers.Dense(4, activation='softmax')
     ])
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     return model
@@ -114,6 +114,8 @@ def train_model(model_white, model_black, model_evaluation, games=1000):
     The models are trained to play chess using the Monte Carlo Tree Search algorithm.
     """
     for i in range(games):
+        rewardBlack = 0
+        rewardWhite = 0
         board = np.zeros((8, 8, 5))
         turn = 0
         while True:
@@ -121,6 +123,8 @@ def train_model(model_white, model_black, model_evaluation, games=1000):
             board = np.reshape(board, (-1, 8, 8, 5))
             valid_move = False
             while valid_move == False:
+                rewardBlack = 0
+                rewardWhite = 0
                 if turn % 2 == 0:
                     # q: how can i get the output of a model for move generation?
                     # a: use the predict method of the model
@@ -133,21 +137,37 @@ def train_model(model_white, model_black, model_evaluation, games=1000):
                     move = model_white.predict(board)
                 else:
                     move = model_black.predict(board)
-            board = boardoriginal
-            moved = move_piece_ai(board, move[0], move[1], move[2], move[3])
-            if moved[0].all() == board.all():
-                continue
+                move = move[0]
+                board = boardoriginal
+                print(move)
+                moved = move_piece_ai(board, move[0], move[1], move[2], move[3])
+                if moved[0].all() == board.all():
+                    if turn % 2 == 0:
+                        rewardWhite = -1
+                        model_white = keras.train_model(model_white, board, rewardWhite)
+                    elif turn % 2 == 1:
+                        rewardBlack = -1
+                        model_black = keras.train_model(model_black, board, rewardBlack)
+                    continue
+                else:
+                    if turn % 2 == 0:
+                        rewardWhite = 1
+                        model_white = keras.train_model(model_white, board, rewardWhite)
+                    elif turn % 2 == 1:
+                        rewardBlack = 1
+                        model_black = keras.train_model(model_black, board, rewardBlack)
+                    valid_move = True
             board = moved[0]
             print_board(board, moved[2], turn, color = turn % 2 + 1)
             winner = get_winner(board)
             if winner != 0:
                 # reward the models based on the winner
                 if winner == 1:
-                    rewardBlack = -1
-                    rewardWhite = 1
+                    rewardBlack = -100
+                    rewardWhite = 100
                 elif winner == 2:
-                    rewardBlack = 1
-                    rewardWhite = -1
+                    rewardBlack = 100
+                    rewardWhite = -100
                 else:
                     rewardBlack = 0
                     rewardWhite = 0
