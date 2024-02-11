@@ -140,7 +140,7 @@ def train_model(model_white, model_black, model_evaluation, games=1000):
                 move = move[0]
                 board = boardoriginal
                 print(move)
-                moved = move_piece_ai(board, move[0], move[1], move[2], move[3])
+                moved = move_piece_ai(board, move[0], move[1], move[2], move[3], turn=turn)
                 if moved[0].all() == board.all():
                     if turn % 2 == 0:
                         rewardWhite = -1
