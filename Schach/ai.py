@@ -15,7 +15,6 @@ import tensorflow as tf
 from tensorflow import keras
 import os
 import sys
-import mcts
 
 # load the models if they are available and if not create them and save them
 def test_gpu():
@@ -118,20 +117,23 @@ def train_model(model_white, model_black, model_evaluation, games=1000):
         board = np.zeros((8, 8, 5))
         turn = 0
         while True:
+            boardoriginal = board
+            board = np.reshape(board, (-1, 8, 8, 5))
             valid_move = False
             while valid_move == False:
                 if turn % 2 == 0:
-                    move = mcts.mcts(board, model_white, model_evaluation)
-                    # q: what does mcts do?
-                    # a: mcts is the Monte Carlo Tree Search algorithm
-                    # q: what is the Monte Carlo Tree Search algorithm?
-                    # a: The Monte Carlo Tree Search algorithm is a heuristic search algorithm that uses random sampling to find the best move in a game.
-                    # q: why do i get this error: TypeError: 'module' object is not callable?
-                    # a: The error occurs when you try to call a module as a function. You should call the function inside the module instead.
-                    # q: how do i fix the error?
-                    # a: You should call the function inside the module instead of the module itself.
+                    # q: how can i get the output of a model for move generation?
+                    # a: use the predict method of the model
+                    # q: how does the predict method work?
+                    # a: the predict method returns the output of the model for a given input
+                    # q: what predict method do i need to use?
+                    # a: the predict method for the model
+                    # q: how do i call the predict method for the model?
+                    # a: model.predict(input)
+                    move = model_white.predict(board)
                 else:
-                    move = mcts.mcts(board, model_black, model_evaluation)
+                    move = model_black.predict(board)
+            board = boardoriginal
             moved = move_piece_ai(board, move[0], move[1], move[2], move[3])
             if moved[0].all() == board.all():
                 continue
