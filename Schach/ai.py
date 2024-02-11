@@ -1,5 +1,6 @@
 from calendar import c
 from hmac import new
+import imp
 from math import e, log
 import random
 from re import T
@@ -7,10 +8,14 @@ from matplotlib.pyplot import pie
 import numpy as np
 import logging
 import time
+from pyparsing import col
 from requests import get
 #import keras
 import tensorflow as tf
 from tensorflow import keras
+import os
+import sys
+import mcts
 
 # load the models if they are available and if not create them and save them
 def test_gpu():
@@ -39,10 +44,10 @@ def create_model():
     The input shape is (8, 8, 5) and the output shape is (8, 8, 8, 8).
     """
     model = keras.Sequential([
-        keras.layers.Conv2D(64, (3, 3), activation='relu', input_shape=(8, 8, 5)),
-        keras.layers.MaxPooling2D((2, 2)),
-        keras.layers.Conv2D(64, (3, 3), activation='relu'),
-        keras.layers.MaxPooling2D((2, 2)),
+        keras.layers.Conv2D(64, (3, 3), strides=(1, 1), activation='relu', padding='same', input_shape=(8, 8, 5)),
+        keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='same'),
+        keras.layers.Conv2D(64, (3, 3), strides=(1, 1), activation='relu', padding='same', input_shape=(8, 8, 5)),
+        keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='same'),
         keras.layers.Flatten(),
         keras.layers.Dense(64, activation='relu'),
         keras.layers.Dense(64, activation='relu'),
@@ -70,10 +75,10 @@ def create_model_evaluation():
     The input shape is (8, 8, 5) and the output shape is (1, 1, 1).
     """
     model = keras.Sequential([
-        keras.layers.Conv2D(64, (3, 3), activation='relu', input_shape=(8, 8, 5)),
-        keras.layers.MaxPooling2D((2, 2)),
-        keras.layers.Conv2D(64, (3, 3), activation='relu'),
-        keras.layers.MaxPooling2D((2, 2)),
+        keras.layers.Conv2D(64, (3, 3), strides=(1, 1), activation='relu', padding='same', input_shape=(8, 8, 5)),
+        keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='same'),
+        keras.layers.Conv2D(64, (3, 3), strides=(1, 1), activation='relu', padding='same', input_shape=(8, 8, 5)),
+        keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='same'),
         keras.layers.Flatten(),
         keras.layers.Dense(64, activation='relu'),
         keras.layers.Dense(64, activation='relu'),
@@ -116,10 +121,22 @@ def train_model(model_white, model_black, model_evaluation, games=1000):
             valid_move = False
             while valid_move == False:
                 if turn % 2 == 0:
-                    move = keras.mcts(board, model_white, model_evaluation)
+                    move = mcts.mcts(board, model_white, model_evaluation)
+                    # q: what does mcts do?
+                    # a: mcts is the Monte Carlo Tree Search algorithm
+                    # q: what is the Monte Carlo Tree Search algorithm?
+                    # a: The Monte Carlo Tree Search algorithm is a heuristic search algorithm that uses random sampling to find the best move in a game.
+                    # q: why do i get this error: TypeError: 'module' object is not callable?
+                    # a: The error occurs when you try to call a module as a function. You should call the function inside the module instead.
+                    # q: how do i fix the error?
+                    # a: You should call the function inside the module instead of the module itself.
                 else:
-                    move = keras.mcts(board, model_black, model_evaluation)
-            board = move(board, move)
+                    move = mcts.mcts(board, model_black, model_evaluation)
+            moved = move_piece_ai(board, move[0], move[1], move[2], move[3])
+            if moved[0].all() == board.all():
+                continue
+            board = moved[0]
+            print_board(board, moved[2], turn, color = turn % 2 + 1)
             winner = get_winner(board)
             if winner != 0:
                 # reward the models based on the winner
@@ -1350,6 +1367,98 @@ def is_valid_move(board, x, y, newX, newY):
         return False
 
 
+# move a piece on the board for ai
+def move_piece_ai(board, x, y, newX, newY, turn):
+    """
+    Moves a piece on the chess board.
+
+    Args:
+        board (numpy.ndarray): The chess board represented as a 3D numpy array.
+        x (int): The x-coordinate of the piece to be moved.
+        y (int): The y-coordinate of the piece to be moved.
+        newX (int): The x-coordinate of the new position.
+        newY (int): The y-coordinate of the new position.
+        turn (int): The current turn number.
+
+    Returns:
+        tuple: A tuple containing the updated board, the updated list of moves, and the last move made.
+
+    """
+    pattern = get_patern(board, x, y)
+    last_move = ""
+    if is_valid_move(board, x, y, newX, newY) == False:
+        return board, [], last_move
+    if pattern[newX, newY] == 5:
+        board[newX, newY] = board[x, y]
+        board[newX, newY, 3] = 1
+        board[newX, newY, 4] = turn
+        if pattern[newX, newY] == 5 and board[x, y, 0] == 1 and x == 6:
+            board[newX + 1, newY] = board[x, y]
+            board[newX + 1, newY, 3] = 2
+            board[newX + 1, newY, 4] = turn
+            board[x, y] = [0, 0, 0, 0, 0]
+            return board, [], last_move
+        elif pattern[newX, newY] == 5 and board[x, y, 0] == 2 and x == 6:
+            board[newX - 1, newY] = board[x, y]
+            board[newX - 1, newY, 3] = 2
+            board[newX - 1, newY, 4] = turn
+            board[x, y] = [0, 0, 0, 0, 0]
+            return board, [], last_move
+    elif pattern[newX, newY] == 4:
+        board[newX, newY] = board[x, y]
+        board[newX, newY, 2] += 1
+        board[newX, newY, 4] = turn
+        board[x, y] = [0, 0, 0, 0, 0]
+        if newX == 7 and newY == y + 2:
+            board[7, 5] = board[7, 7]
+            board[7, 5, 2] += 1
+            board[7, 5, 4] = turn
+            board[7, 7] = [0, 0, 0, 0, 0]
+            return board, [], last_move
+        elif newX == 7 and newY == y - 2:
+            board[7, 3] = board[7, 0]
+            board[7, 3, 2] += 1
+            board[7, 3, 4] = turn
+            board[7, 0] = [0, 0, 0, 0, 0]
+            return board, [], last_move
+    elif pattern[newX, newY] == 2:
+        if board[newX, newY, 3] == 2:
+            if board[newX, newY, 0] == 1:
+                board[newX, newY] = board[x, y]
+                board[newX, newY, 3] = 1
+                board[newX, newY, 4] = turn
+                board[newX - 1, newY] = [0, 0, 0, 0, 0]
+                board[x, y] = [0, 0, 0, 0, 0]
+                return board, [], last_move
+            elif board[newX, newY, 0] == 2:
+                board[newX, newY] = board[x, y]
+                board[newX, newY, 3] = 1
+                board[newX, newY, 4] = turn
+                board[newX + 1, newY] = [0, 0, 0, 0, 0]
+                board[x, y] = [0, 0, 0, 0, 0]
+                return board, [], last_move
+        else:
+            board[newX, newY] = board[x, y]
+            board[newX, newY, 3] = 1
+            board[newX, newY, 4] = turn
+            board[x, y] = [0, 0, 0, 0, 0]
+            if board[newX, newY, 1] == 1:
+                board = promote_pawn_random(board, newX, newY, board[newX, newY, 0])
+            return board, [], last_move
+        board[newX, newY] = board[x, y]
+        board[newX, newY, 2] += 1
+        board[newX, newY, 4] = turn
+        if board[newX, newY, 1] == 1:
+            board = promote_pawn_random(board, newX, newY, board[newX, newY, 0])
+        board[x, y] = [0, 0, 0, 0, 0]
+    board[newX, newY] = board[x, y]
+    board[newX, newY, 2] += 1
+    board[newX, newY, 4] = turn
+    if board[newX, newY, 1] == 1:
+        board = promote_pawn_random(board, newX, newY, board[newX, newY, 0])
+    board[x, y] = [0, 0, 0, 0, 0]
+    return board, [], last_move
+
 
 # print the board
 #print_board(board, moves=movement, turn=turn)
@@ -1394,6 +1503,11 @@ if __name__ == "__main__":
     tf.config.list_physical_devices('GPU')
     test_gpu()
     model_white, model_black, model_evaluation = initialize_models()
+    if sys.argv[1] == "t":
+        print("Training")
+        model_white, model_black, model_evaluation = train_model(model_white, model_black, model_evaluation)
+    else:
+        print("Not training")
     exit()
     # Set up the logging configuration to display warning messages and above
     logging.basicConfig(level=logging.WARNING)
