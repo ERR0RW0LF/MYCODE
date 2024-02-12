@@ -1123,13 +1123,13 @@ def main(board, turn: int, moves):
         if old_turn == turn or last_move == "":
             r += 1
             print_board(board, str(r), turn, color=color)
-            
+            time.sleep(0.0005)
+            winner = get_winner(board)
         else:
             r = 0
             print_board(board, last_move, turn, color=color)
-        
-        time.sleep(0.00001)
-        winner = get_winner(board)
+            time.sleep(0.0005)
+            winner = get_winner(board)
         
     print("Winner: ", readable_winner(get_winner(board)))
     #print("Moves: ")
@@ -1234,6 +1234,7 @@ if __name__ == "__main__":
         
         # Print the game number
         print("Game: ", i + 1)
+        print('\n'*2)
         random.seed(random.random())
     
     winnesW = 0
@@ -1280,6 +1281,7 @@ if __name__ == "__main__":
         
         # Print the game number
         print("Game: ", i + 1)
+        print('\n'*4)
         random.seed(random.random())
     
     winnesW = 0
