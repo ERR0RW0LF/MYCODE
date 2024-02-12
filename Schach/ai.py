@@ -1,9 +1,7 @@
 from calendar import c
 from hmac import new
-import imp
 from math import e, log
 import random
-from re import T
 from matplotlib.pyplot import pie
 import numpy as np
 import logging
