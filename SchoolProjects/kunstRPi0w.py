@@ -5,7 +5,8 @@
 import time
 import board
 import neopixel
-
+import sys
+import os
 
 # Choose an open pin connected to the Data In of the NeoPixel strip, i.e. board.D18
 # NeoPixels must be connected to D10, D12, D18 or D21 to work.
@@ -79,14 +80,14 @@ try:
         #time.sleep(1)
 
         rainbow_cycle(0.001)  # rainbow cycle with 1ms delay per step
-	
-	i += 1
-	
-	if i > 10:
-	    pixels.fill((0, 0, 0))
-    	    pixels.show()
+        i += 1
+
+        if i > 100:
+            pixels.fill((0, 0, 0))
+            pixels.show()
             print("Goodbye!")
-	    break
+            os.system("sudo shutdown -h now") # shutdown the RPi
+            break
 except KeyboardInterrupt:
     pixels.fill((0, 0, 0))
     pixels.show()
