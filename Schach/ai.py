@@ -142,7 +142,7 @@ def train_model(model_white, model_black, model_evaluation, games=1000):
                 if moved[0].all() == board.all():
                     if turn % 2 == 0:
                         rewardWhite = -1
-                        model_white.fit(model_white, board, rewardWhite)
+                        model_white.train(model_white, board, rewardWhite)
                     elif turn % 2 == 1:
                         rewardBlack = -1
                         model_black.fit(model_black, board, rewardBlack)
