@@ -75,8 +75,8 @@ def encode_image(image: Image, message: str):
         
         img[curserB, curserG, 2] = g
         img[curserB, curserG, 1] = b
-        #if i % 100 >= 0:
-        #    print(f"{i}/{len(message)}")
+        if i % 100 >= 0:
+            print(f"{i}/{len(message)}")
         
         img[curserB, curserG, 0] = message[i]
         
