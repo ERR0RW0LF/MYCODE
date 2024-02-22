@@ -21,9 +21,17 @@ def encode_image(image: Image, message: str):
     curserB = 0
     g = random.randint(1, 255)
     b = random.randint(1, 255)
-    altertPositions = []
-    for i in range(len(message)-1):
-        img[curserB, curserG, 0] = message[i]
+    altertPositions = [(curserG, curserB)]
+    img[curserB, curserG, 1] = g
+    img[curserB, curserG, 2] = b
+    img[curserB, curserG, 0] = message[0]
+    img = Image.fromarray(img)
+    draw = ImageDraw.Draw(img)
+    draw.point((curserG, curserB), fill=(message[0], g, b))
+    img = np.array(img)
+    print(message[0])
+    for i in range(1,len(message)):
+        
         
         while g + curserG >= img.shape[1]:
             if g + curserG > img.shape[1] - 1:
@@ -48,13 +56,15 @@ def encode_image(image: Image, message: str):
         if i % 100 >= 0:
             print(f"{i}/{len(message)}")
         
+        img[curserB, curserG, 0] = message[i]
+        
         img = Image.fromarray(img)
         draw = ImageDraw.Draw(img)
         draw.point((curserG, curserB), fill=(message[i], g, b))
         img = np.array(img)
     img[curserB, curserG, 1] = 0
     img[curserB, curserG, 2] = 0
-    img[curserB, curserG, 0] = message[i+1]
+    img[curserB, curserG, 0] = message[i]
     # Bild speichern
     return Image.fromarray(img)
 
