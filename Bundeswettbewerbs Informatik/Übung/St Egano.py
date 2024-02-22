@@ -26,25 +26,45 @@ b = 0
 curserG = 0
 curserB = 0
 
+asciiR.append(img[curserB, curserG, 0])
+text += chr(img[curserB, curserG, 0])
+
+g = img[curserB, curserG, 1]
+b = img[curserB, curserG, 2]
+
 while True:
+    
+    while g + curserG >= img.shape[1]:
+        if g + curserG > img.shape[1] - 1:
+            g = g - (img.shape[1] - curserG)
+            curserG = 0
+    
+    while b + curserB >= img.shape[0]:
+        if b + curserB > img.shape[0] - 1:
+            b = b - (img.shape[0] - curserB)
+            curserB = 0
+    
     asciiR.append(img[curserB, curserG, 0])
-    
-    if g + curserG > img.shape[1] - 1:
-        g = g - (img.shape[1] - curserG)
-        curserG = 0
-    if b + curserB > img.shape[0] - 1:
-        b = b - (img.shape[0] - curserB)
-        curserB = 0
-    
     curserG += g
     curserB += b
     
     g = img[curserB, curserG, 1]
     b = img[curserB, curserG, 2]
     
+    text += chr(img[curserB, curserG, 0])
     if g == 0 and b == 0:
         break
 
-    text += chr(img[curserB, curserG, 0])
-    
-    print(text)
+print()
+print('-'*50)
+print()
+print(text)
+print()
+print('-'*50)
+print()
+
+if os.path.exists(f'{sys.argv[1]}.txt'):
+    os.remove(f'{sys.argv[1]}.txt')
+testfile = open(f'{sys.argv[1]}.txt', 'w')
+testfile.write(text)
+testfile.close()
