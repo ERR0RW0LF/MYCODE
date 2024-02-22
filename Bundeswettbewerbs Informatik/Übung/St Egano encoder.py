@@ -45,12 +45,18 @@ def encode_image(image: Image, message: str):
         
         img[curserB, curserG, 2] = g
         img[curserB, curserG, 1] = b
-        if i % 100 == 0:
+        if i % 100 >= 0:
             print(f"{i}/{len(message)}")
+        
+        img = Image.fromarray(img)
+        draw = ImageDraw.Draw(img)
+        draw.point((curserG, curserB), fill=(message[i], g, b))
+        img = np.array(img)
     img[curserB, curserG, 1] = 0
     img[curserB, curserG, 2] = 0
     img[curserB, curserG, 0] = message[i+1]
     # Bild speichern
     return Image.fromarray(img)
 
-encode_image(Image.open(sys.argv[1]), sys.argv[2]).save(sys.argv[3])
+img: Image = encode_image(Image.open(sys.argv[1]), sys.argv[2])
+img.save(sys.argv[3])
