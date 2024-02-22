@@ -19,6 +19,8 @@ def encode_image(image: Image, message: str):
     # Text einfügen
     curserG = 0
     curserB = 0
+    g = random.randint(1, 255)
+    b = random.randint(1, 255)
     for i in range(len(message)):
         img[curserB, curserG, 0] = message[i]
         if i < len(message) - 1:
@@ -31,11 +33,12 @@ def encode_image(image: Image, message: str):
                 if b + curserB > img.shape[0] - 1:
                     b = b - (img.shape[0] - curserB)
                     curserB = 0
-            img[curserB, curserG, 1] = random.randint(0, 255)
-            img[curserB, curserG, 2] = random.randint(0, 255)
-            curserG += img[curserB, curserG, 1]
-            curserB += img[curserB, curserG, 2]
-            
+            img[curserB, curserG, 1] = random.randint(1, 255)
+            img[curserB, curserG, 2] = random.randint(1, 255)
+            curserG += g
+            curserB += b
+            g = img[curserB, curserG, 2]
+            b = img[curserB, curserG, 1]
     img[curserB, curserG, 1] = 0
     img[curserB, curserG, 2] = 0
     # Bild speichern
