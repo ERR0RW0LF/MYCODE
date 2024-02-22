@@ -33,7 +33,7 @@ b = img[curserB, curserG, 2]
 
 while True:
     
-    while g + curserG >= img.shape[1]:
+    while g + curserG >= img.shape[1]: 
         if g + curserG > img.shape[1] - 1:
             g = g - (img.shape[1] - curserG)
             curserG = 0
