@@ -21,26 +21,35 @@ def encode_image(image: Image, message: str):
     curserB = 0
     g = random.randint(1, 255)
     b = random.randint(1, 255)
-    for i in range(len(message)):
+    altertPositions = []
+    for i in range(len(message)-1):
         img[curserB, curserG, 0] = message[i]
-        if i < len(message) - 1:
-            while g + curserG >= img.shape[1]:
-                if g + curserG > img.shape[1] - 1:
-                    g = g - (img.shape[1] - curserG)
-                    curserG = 0
-            
-            while b + curserB >= img.shape[0]:
-                if b + curserB > img.shape[0] - 1:
-                    b = b - (img.shape[0] - curserB)
-                    curserB = 0
-            img[curserB, curserG, 1] = random.randint(1, 255)
-            img[curserB, curserG, 2] = random.randint(1, 255)
-            curserG += g
-            curserB += b
-            g = img[curserB, curserG, 2]
-            b = img[curserB, curserG, 1]
+        
+        while g + curserG >= img.shape[1]:
+            if g + curserG > img.shape[1] - 1:
+                g = g - (img.shape[1] - curserG)
+                curserG = 0
+        
+        while b + curserB >= img.shape[0]:
+            if b + curserB > img.shape[0] - 1:
+                b = b - (img.shape[0] - curserB)
+                curserB = 0
+        
+        curserG += g
+        curserB += b
+        while (curserG, curserB) in altertPositions:
+            b = random.randint(1, 255)
+            g = random.randint(1, 255)
+        
+        altertPositions.append((curserG, curserB))
+        
+        img[curserB, curserG, 2] = g
+        img[curserB, curserG, 1] = b
+        if i % 100 == 0:
+            print(f"{i}/{len(message)}")
     img[curserB, curserG, 1] = 0
     img[curserB, curserG, 2] = 0
+    img[curserB, curserG, 0] = message[i+1]
     # Bild speichern
     return Image.fromarray(img)
 
