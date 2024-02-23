@@ -53,7 +53,8 @@ while True:
     text += chr(img[curserB, curserG, 0])
     if g == 0 and b == 0:
         break
-
+    print(text)
+    
 print()
 print('-'*50)
 print()
