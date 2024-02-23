@@ -30,7 +30,7 @@ text += chr(img[curserB, curserG, 0])
 
 g = img[curserB, curserG, 1]
 b = img[curserB, curserG, 2]
-
+i = 0
 while True:
     
     while g + curserG >= img.shape[1]: 
@@ -53,7 +53,8 @@ while True:
     text += chr(img[curserB, curserG, 0])
     if g == 0 and b == 0:
         break
-    print(text)
+    i += 1
+    print(i)
     
 print()
 print('-'*50)
