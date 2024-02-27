@@ -72,7 +72,8 @@ def encode_image(image: Image, message: str):
             curserB += b
             if time.time() != lastTime:
                 random.seed(time.time() + random.randint(1, 1000) + time.time() + random.randint(1, 1000) + (time.time() + random.randint(1, 1000) + time.time() + random.randint(1, 1000))/random.randint(1, 1000))
-        
+                lastTime = time.time()
+                
         altertPositions.append((curserG, curserB))
         
         img[curserB, curserG, 2] = g
