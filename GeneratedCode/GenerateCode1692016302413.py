@@ -1,4 +1,4 @@
-
+import ursina
 from ursina import *
 
 app = Ursina()
