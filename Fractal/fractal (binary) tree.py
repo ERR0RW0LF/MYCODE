@@ -127,7 +127,7 @@ def draw_picture(tree:str):
     posY = d/4
     ang = 0
     
-    rotationBox = 5
+    rotationBox = 10
     
     for i in range(len(tree)):
         if tree[i] == '0':
@@ -157,7 +157,7 @@ def draw_picture(tree:str):
         print(newPosX, newPosY)
         print(posX, posY)
     
-    img.save('tree2.png')
+    img.save('tree3.png')
 
 
 def calculate_new_position(start_x, start_y, direction, length):
