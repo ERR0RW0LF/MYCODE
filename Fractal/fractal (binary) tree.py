@@ -1,4 +1,3 @@
-from hmac import new
 import turtle
 import time
 from PIL import Image, ImageDraw, ImageFont
