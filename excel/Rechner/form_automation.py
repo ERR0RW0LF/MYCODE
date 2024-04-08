@@ -18,6 +18,9 @@
 
 
 # write the formulas to a file
+import pprint
+
+
 def save_formulas(formulas:list):
     with open('formulas.txt', 'w') as file:
         for formula in formulas:
@@ -27,6 +30,11 @@ def save_formulas(formulas:list):
 # generate all possible formulas for the given range of bits
 def generate_formulas(bits:int, row:int, lowest:str, highest:str):
     formulas = []
+    direction = 1
+    start = ord(lowest[0]) - ord('A')
+    end = ord(highest[0]) - ord('A')
+    if start > end:
+        direction = -1
     for i in range(2**bits):
         formula = '=GANZZAHL(UND('
         for j in range(bits):
@@ -34,7 +42,10 @@ def generate_formulas(bits:int, row:int, lowest:str, highest:str):
             column = ''
             temp = j
             while temp >= 0:
-                column = chr(ord('A') + temp % 26) + column
+                if direction == 1:
+                    column = chr(ord(lowest.upper()[0]) + temp % 26) + column
+                else:
+                    column = chr(ord(highest.upper()[0]) + bits - 1 - temp % 26) + column
                 temp = temp // 26 - 1
 
             if i & (1 << j):
@@ -48,12 +59,12 @@ def generate_formulas(bits:int, row:int, lowest:str, highest:str):
 
 # main function
 def main():
-    bits = 8
-    row = 1
-    lowest = 'A'
-    highest = 'H'
+    bits = 16
+    row = 68
+    lowest = 'R'
+    highest = 'C'
     formulas = generate_formulas(bits, row, lowest, highest)
-    print(formulas)
+    pprint.pprint(formulas)
     save_formulas(formulas)
 
 if __name__ == '__main__':
