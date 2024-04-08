@@ -53,4 +53,8 @@ def main():
     lowest = 'A'
     highest = 'H'
     formulas = generate_formulas(bits, row, lowest, highest)
+    print(formulas)
     save_formulas(formulas)
+
+if __name__ == '__main__':
+    main()
