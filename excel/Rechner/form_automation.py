@@ -38,9 +38,9 @@ def generate_formulas(bits:int, row:int, lowest:str, highest:str):
                 temp = temp // 26 - 1
 
             if i & (1 << j):
-                formula += highest + str(row) + '=' + column + str(row) + ';'
+                formula += column + str(row) + ';'
             else:
-                formula += 'NICHT(' + highest + str(row) + '=' + column + str(row) + ');'
+                formula += 'NICHT(' + column + str(row) + ');'
         formula = formula[:-1] + '))'
         formulas.append(formula)
     return formulas
