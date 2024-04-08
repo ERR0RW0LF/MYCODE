@@ -4,3 +4,7 @@
 # Anzahl der binäre Auswahl 
 # Anfang und Ende der Auswahl 
 
+nBitSelctor = input()
+startBitSelctor = input()
+endBitSelctor = input()
+
