@@ -74,7 +74,7 @@ class ai(nn.Module):
     
     def train(self) -> None:
         self.optimizer.zero_grad()
-        self.loss(self.forward(self.transform(np.ndarray(Image.open('face.jpg').convert('RGB'))).unsqueeze(0).to(torch.device('cuda'))), self.reward).backward()
+        self.loss(self.forward(self.transform(np.array(Image.open('face.jpg').convert('RGB'))).unsqueeze(0).to(torch.device('cuda'))), self.reward).backward()
         self.optimizer.step()
         
     def save(self) -> None:
@@ -94,7 +94,7 @@ def main() -> None:
     while True:
         cv.imwrite('face.jpg', cv.VideoCapture(0).read()[1])
         cv.imshow('face', cv.imread('face.jpg'))
-        ai1.evaluate(ai1.guess(np.ndarray(Image.open('face.jpg').convert('RGB'))))
+        ai1.evaluate(ai1.guess(np.array(Image.open('face.jpg').convert('RGB'))))
         ai1.train()
         ai1.save()
         
