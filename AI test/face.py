@@ -89,10 +89,11 @@ def main() -> None:
     cv.imwrite('face.jpg', cv.VideoCapture(0).read()[1])
     
     ai1 = ai()
+    ai1.load()
     i = 0
     while True:
         cv.imwrite('face.jpg', cv.VideoCapture(0).read()[1])
-        ai1.evaluate(ai1.guess(Image.open('face.jpg').convert('RGB'))
+        ai1.evaluate(ai1.guess(Image.open('face.jpg').convert('RGB')))
         ai1.train()
         ai1.save()
         
