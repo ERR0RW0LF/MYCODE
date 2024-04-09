@@ -74,7 +74,7 @@ class ai(nn.Module):
     
     def train(self) -> None:
         self.optimizer.zero_grad()
-        self.loss(self.forward(self.transform(Image.open('face.jpg').convert('RGB').numpy()).unsqueeze(0).to(torch.device('cuda'))), self.reward).backward()
+        self.loss(self.forward(self.transform(Image.open('face.jpg').convert('RGB')).unsqueeze(0).to(torch.device('cuda'))), self.reward).backward()
         self.optimizer.step()
         
     def save(self) -> None:
