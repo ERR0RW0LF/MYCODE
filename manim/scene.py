@@ -1,4 +1,6 @@
 from manim import *
+import numpy as np
+import random
 
 class CreateCircle(Scene):
     def construct(self):
@@ -20,3 +22,15 @@ class SquareToCircle(Scene):
         self.play(Create(square))  # animate the creation of the square
         self.play(Transform(square, circle))  # interpolate the square into the circle
         self.play(FadeOut(square))  # fade out animation
+
+class SortingAlgorithm(Scene):
+    def construct(self):
+        random.seed(0)
+        array = []
+        for i in range(1, 11):
+            array.insert(random.randint(0, len(array)), i)
+        
+        square1 = Square()
+        
+        
+        
