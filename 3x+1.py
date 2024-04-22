@@ -39,8 +39,13 @@ class CollatzConjecture():
                     self.sequence[b].append(n)
     
     def inorder(self, repetitions=1):
+        b =-1
         self.sequence = {}
-        for n in range(1, repetitions+1):
+        for c in range(1, repetitions+1):
+            if b != c:
+                print(' '*100,end="\r")
+                print(c/repetitions*100, end="\r")
+            n = c
             b = n
             inDict = False
             #skip if already calculated
@@ -64,6 +69,7 @@ class CollatzConjecture():
             
             self.sequence[b] = [primeN, [n]]
             #print(self.sequence[b][1])
+            
             while n != 1:
                 if n % 2 == 0:
                     n = n // 2
