@@ -1,11 +1,11 @@
 import pprint
-from turtle import color
 import matplotlib.pyplot as plt
 import numpy as np
 import random
 import pprint
+from numba import cuda
 
-from sympy import true
+cuda.select_device(0)
 
 class CollatzConjecture():
     def __init__(self, n):
@@ -42,7 +42,15 @@ class CollatzConjecture():
         self.sequence = {}
         for n in range(1, repetitions+1):
             b = n
+            inDict = False
+            #skip if already calculated
+            for key in self.sequence:
+                if n in self.sequence[key][1]:
+                    inDict = True
+                    break
             
+            if inDict:
+                continue
             if b == 1:
                 primeN = False
             elif b > 1:
@@ -61,6 +69,15 @@ class CollatzConjecture():
                     n = n // 2
                 else:
                     n = 3 * n + 1
+                
+                for key in self.sequence:
+                    if n in self.sequence[key][1]:
+                        inDict = True
+                        break
+                
+                if inDict:
+                    break
+                
                 self.sequence[b][1].append(n)
 
     def plot(self):
@@ -76,7 +93,10 @@ class CollatzConjecture():
         plt.show()
 
 c = CollatzConjecture(27)
-c.random(10)
-pprint.pprint(c.inorder(1000))
+# q: how can i make c run on the gpu?
+# a: use numba.cuda
 
+c.random(10)
+pprint.pprint(c.inorder(100))
+cuda.list_devices()
 c.plot()
