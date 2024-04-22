@@ -121,7 +121,7 @@ c = CollatzConjecture(27)
 # a: use numba.cuda
 
 c.random(10)
-pprint.pprint(c.inorder(100000))
+print(c.inorder(100000))
 pprint.pprint(c.getAllNotExistentValuesAsList())
 cuda.list_devices()
 c.plot()
