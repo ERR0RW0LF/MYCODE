@@ -63,7 +63,7 @@ class CollatzConjecture():
             
             
             self.sequence[b] = [primeN, [n]]
-            print(self.sequence[b][1])
+            #print(self.sequence[b][1])
             while n != 1:
                 if n % 2 == 0:
                     n = n // 2
