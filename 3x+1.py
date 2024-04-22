@@ -42,9 +42,8 @@ class CollatzConjecture():
         b =-1
         self.sequence = {}
         for c in range(1, repetitions+1):
-            if int(b/repetitions*100) != int(c/repetitions*100):
-                print(' '*100,end="\r")
-                print(int(c/repetitions*100), '%', end="\r")
+            if b != c:
+                print(int(c/repetitions*100), '%  ', c, ' / ', repetitions, ' '*50, end="\r")
             n = c
             b = n
             inDict = False
