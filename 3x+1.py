@@ -92,13 +92,24 @@ class CollatzConjecture():
         plt.grid(True)
         plt.show()
     
-    def getAllVeluesAsList(self):
+    def getAllValuesAsList(self):
         allValues = []
         for key in self.sequence:
             allValues += self.sequence[key][1]
         
         return allValues
 
+    def getAllNotExistentValuesAsList(self):
+        allValues = self.getAllValuesAsList()
+        allNotValues = []
+        allValues.sort()
+        allValues.reverse()
+        maxValue = allValues.index(1)
+        for i in range(maxValue):
+            if i+1 not in allValues:
+                allNotValues.append(i+1)
+        
+        return allNotValues
 
 c = CollatzConjecture(27)
 # q: how can i make c run on the gpu?
@@ -106,5 +117,6 @@ c = CollatzConjecture(27)
 
 c.random(10)
 pprint.pprint(c.inorder(100000))
+pprint.pprint(c.getAllNotExistentValuesAsList())
 cuda.list_devices()
 c.plot()
