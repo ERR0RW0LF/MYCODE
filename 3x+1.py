@@ -120,8 +120,7 @@ c = CollatzConjecture(27)
 # q: how can i make c run on the gpu?
 # a: use numba.cuda
 
-c.random(10)
-print(c.inorder(100000))
-pprint.pprint(c.getAllNotExistentValuesAsList())
+c.inorder(100000)
+print(c.getAllNotExistentValuesAsList())
 cuda.list_devices()
 c.plot()
