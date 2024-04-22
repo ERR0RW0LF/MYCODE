@@ -97,6 +97,6 @@ c = CollatzConjecture(27)
 # a: use numba.cuda
 
 c.random(10)
-pprint.pprint(c.inorder(100))
+pprint.pprint(c.inorder(10^4))
 cuda.list_devices()
 c.plot()
