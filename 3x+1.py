@@ -91,6 +91,14 @@ class CollatzConjecture():
         
         plt.grid(True)
         plt.show()
+    
+    def getAllVeluesAsList(self):
+        allValues = []
+        for key in self.sequence:
+            allValues += self.sequence[key][1]
+        
+        return allValues
+
 
 c = CollatzConjecture(27)
 # q: how can i make c run on the gpu?
