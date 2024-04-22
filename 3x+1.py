@@ -111,6 +111,7 @@ class CollatzConjecture():
         allValues.reverse()
         maxValue = allValues.index(1)
         for i in range(maxValue):
+            print(' ', int(i/maxValue*100), '%  ', i, ' / ', maxValue, ' '*50, end="\r")
             if i+1 not in allValues:
                 allNotValues.append(i+1)
         
