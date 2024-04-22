@@ -70,7 +70,8 @@ class CollatzConjecture():
             else:
                 plt.plot(self.sequence[key][1], color='blue')
             
-        pprint.pprint(self.sequence)
+            print(key, self.sequence[key][0], self.sequence[key][1])
+        
         plt.grid(True)
         plt.show()
 
