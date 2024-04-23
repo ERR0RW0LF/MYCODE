@@ -112,7 +112,8 @@ class CollatzConjecture():
         for b in allValues:
             if b not in allValuesB:
                 allValuesB.append(b)
-                
+        
+        allValues = allValuesB
         
         #print(allValues)
         with open('allValues.txt', 'w') as f:
