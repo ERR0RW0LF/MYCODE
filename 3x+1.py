@@ -1,3 +1,4 @@
+import os
 import pprint
 import matplotlib.pyplot as plt
 import numpy as np
@@ -118,6 +119,9 @@ class CollatzConjecture():
                 allNotValues.append(i+1)
         
         print(allNotValues)
+        with open('allNotValues.txt', 'w') as f:
+            for item in allNotValues:
+                f.write("%s\n" % item)
         return allNotValues
 
 
