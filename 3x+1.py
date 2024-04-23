@@ -7,6 +7,7 @@ from numba import cuda
 
 cuda.select_device(0)
 
+@cuda.jit
 class CollatzConjecture():
     def __init__(self, n):
         self.n = n
@@ -117,10 +118,10 @@ class CollatzConjecture():
         
         return allNotValues
 
+
 c = CollatzConjecture(27)
 # q: how can i make c run on the gpu?
 # a: use numba.cuda
-
 c.inorder(100000)
 cuda.list_devices()
 c.plot()
