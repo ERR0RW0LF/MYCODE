@@ -117,6 +117,7 @@ class CollatzConjecture():
             if i+1 not in allValues:
                 allNotValues.append(i+1)
         
+        print(allNotValues)
         return allNotValues
 
 
