@@ -103,7 +103,14 @@ class CollatzConjecture():
     def getAllValuesAsList(self):
         allValues = []
         for key in self.sequence:
-            allValues += self.sequence[key][1]
+            allValues.append(key)
+            for v in self.sequence[key][1]:
+                allValues.append(v)
+        
+        #print(allValues)
+        with open('allValues.txt', 'w') as f:
+            for item in allValues:
+                f.write("%s\n" % item)
         
         return allValues
 
@@ -113,6 +120,7 @@ class CollatzConjecture():
         allValues.sort()
         allValues.reverse()
         maxValue = allValues.index(1)
+        allValues.reverse()
         for i in range(maxValue):
             print(' ', int(i/maxValue*100), '%  ', i, ' / ', maxValue, ' '*50, end="\r")
             if i+1 not in allValues:
