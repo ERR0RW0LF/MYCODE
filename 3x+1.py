@@ -107,6 +107,13 @@ class CollatzConjecture():
             for v in self.sequence[key][1]:
                 allValues.append(v)
         
+        allValues.sort()
+        allValuesB = []
+        for b in allValues:
+            if b not in allValuesB:
+                allValuesB.append(b)
+                
+        
         #print(allValues)
         with open('allValues.txt', 'w') as f:
             for item in allValues:
