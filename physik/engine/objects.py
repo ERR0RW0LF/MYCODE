@@ -27,7 +27,7 @@ class Object():
         self.angular_impulse = angular_impulse # Nm*s (angular impulse of the object) (J) is the change in angular momentum of the object
         self.orientation_matrix = orientation_matrix # 3x3 matrix (orientation matrix of the object) is the matrix that transforms the object's local coordinate system to the world coordinate system
         self.orientation_matrix_inverse = orientation_matrix_inverse # 3x3 matrix (inverse orientation matrix of the object) is the matrix that transforms the world coordinate system to the object's local coordinate system
-        
+        self.id = 0 # int (id of the object) (e.g. 1, 2, 3, 4, 5, etc.) is the unique identifier of the object
     
     # MARK: - Edit
     # Edit the object
@@ -75,7 +75,7 @@ class Object():
     
     # MARK: - Update
     # Update the object using the necessary variables to calculate the other variables of the object
-    def update(self, forces, time):
+    def update(self, time):
         # calculate acceleration using time and velocity
         pass
     
@@ -161,6 +161,11 @@ class Object():
     
     
     
+    
+    # MARK: - Get Info
+    # Get the information of the object
+    def get_info(self):
+        return self.__dict__
 
 
 
