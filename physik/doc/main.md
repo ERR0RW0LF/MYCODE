@@ -50,4 +50,3 @@ Eine .sim Datei besteht aus einer Liste von Körpern und Kräften. Jeder Körper
 Die Simulation besteht aus einem Array der den simulierten Raum darstellt. Jeder Eintrag beschreibt einen Punkt im Raum. Alle Punkte werden in einem 5D Array gespeichert. Die ersten drei Dimensionen sind die Position im Raum, die vierte Dimension beschreibt ein Objekt und seine Eigenschaften und die fünfte Dimension beschreibt die Veränderungen die in einem Zeitschritt passieren. 
 
 Die Simulation soll deterministisch sein, das heißt, dass die Simulation bei gleichen Eingaben immer das gleiche Ergebnis liefern soll.
-
