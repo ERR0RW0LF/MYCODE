@@ -1,5 +1,7 @@
 # Object class
 class Object():
+    # MARK: - Initialize
+    # Initialize the object
     def __init__(self, name, mass, position, velocity, acceleration, vector, size, color=None, force=None, torque=None, angular_velocity=None, angular_acceleration=None, angular_vector=None, moment_of_inertia=None, center_of_mass=[0,0,0], orientation=None, angular_momentum=None, angular_impulse=None, orientation_matrix=None, orientation_matrix_inverse=None, orientation_matrix_transpose=None, orientation_matrix_transpose_inverse=None):
         self.name = name # str (name of the object) (e.g. "ball", "car", "plane", "rocket", etc.)
         self.mass = mass # kg (mass of the object) (m) (e.g. 1, 2, 3, 4, 5, etc.) is the amount of matter in an object
@@ -10,7 +12,7 @@ class Object():
         self.size = size # m (size of the object) (radius for a sphere) is the distance from the center of the object to the edge of the object
         self.color = color # (r, g, b) (color of the object) (e.g. (255, 0, 0) for red, (0, 255, 0) for green, (0, 0, 255) for blue, etc.) is the appearance of the object
         self.force = force # N (force acting on the object) (F=m*a) (e.g. 1, 2, 3, 4, 5, etc.) is the interaction that changes the motion of the object
-        self.torque = torque # Nm (torque acting on the object) (e.g. 1, 2, 3, 4, 5, etc.) is the interaction that changes the rotation of the object
+        self.torque = torque # Nm (torque acting on the object) (τ) (e.g. 1, 2, 3, 4, 5, etc.) is the interaction that changes the rotation of the object
         self.angular_velocity = angular_velocity # rad/s (angular velocity of the object) (dθ/dt) is the rate of change of orientation of the object
         self.angular_acceleration = angular_acceleration # rad/s^2 (angular acceleration of the object) (d^2θ/dt^2) is the rate of change of angular velocity of the object
         self.angular_vector = angular_vector # rad/s (angular vector of the object) (ωx, ωy, ωz) is the direction and magnitude of the object's rotation
@@ -23,7 +25,9 @@ class Object():
         self.orientation_matrix_inverse = orientation_matrix_inverse # 3x3 matrix (inverse orientation matrix of the object) is the matrix that transforms the world coordinate system to the object's local coordinate system
         
     
-    def edit(self, name=None, mass=None, position=None, velocity=None, acceleration=None, vector=None, color=None):
+    # MARK: - Edit
+    # Edit the object
+    def edit(self, name=None, mass=None, position=None, velocity=None, acceleration=None, vector=None, size=None, color=None, force=None, torque=None, angular_velocity=None, angular_acceleration=None, angular_vector=None, moment_of_inertia=None, center_of_mass=None, orientation=None, angular_momentum=None, angular_impulse=None, orientation_matrix=None, orientation_matrix_inverse=None):
         if name:
             self.name = name
         if mass:
@@ -36,7 +40,33 @@ class Object():
             self.acceleration = acceleration
         if vector:
             self.vector = vector
+        if size:
+            self.size = size
         if color:
             self.color = color
+        if force:
+            self.force = force
+        if torque:
+            self.torque = torque
+        if angular_velocity:
+            self.angular_velocity = angular_velocity
+        if angular_acceleration:
+            self.angular_acceleration = angular_acceleration
+        if angular_vector:
+            self.angular_vector = angular_vector
+        if moment_of_inertia:
+            self.moment_of_inertia = moment_of_inertia
+        if center_of_mass:
+            self.center_of_mass = center_of_mass
+        if orientation:
+            self.orientation = orientation
+        if angular_momentum:
+            self.angular_momentum = angular_momentum
+        if angular_impulse:
+            self.angular_impulse = angular_impulse
+        if orientation_matrix:
+            self.orientation_matrix = orientation_matrix
+        if orientation_matrix_inverse:
+            self.orientation_matrix_inverse = orientation_matrix_inverse
     
-    def new_
+    
