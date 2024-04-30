@@ -3,6 +3,7 @@ import os
 import numpy as np
 import json
 import matplotlib.pyplot as plt
+import pickle
 
 #MARK: - Simulation class
 class Simulation():
@@ -21,18 +22,18 @@ class Simulation():
     
     # MARK: - Simulation properties setters
     def setDimensions(self, dimensions):
-        self.dimensions = dimensions
+        self.dimensions = int(dimensions)
     
     def setSize(self, size):
-        self.size = size
+        self.size = int(size)
     
     def setTMax(self, t_max):
         # set the maximum timesteps the simulation will run
-        self.t_max = t_max
+        self.t_max = int(t_max)
     
     def setDt(self, dt):
         # set the timestep length for the simulation
-        self.dt = dt
+        self.dt = float(dt)
     
     # MARK: - Object creation
     def createObject(self, name, mass:float, position:list, velocity:list):        
@@ -82,7 +83,7 @@ class Simulation():
         # add the objects to the simulation space at their positions 
         for id, obj in self.objects.items():
             position = obj['position']
-            self.simSpace[tuple(position)] = id
+            self.simSpace[tuple([int(i) for i in position])] = id
     
     # MARK: - Force and acceleration calculation
     # MARK: - Force calculation
@@ -101,9 +102,9 @@ class Simulation():
         
         # calculate the magnitude of the force
         force = self.gravCon * obj1['mass'] * obj2['mass'] / np.linalg.norm(direction)**2
-        
+
         # save the force in the object 1 and object 2
-        obj1['forces'].append((id2, direction, force))
+        obj1['forces'].append((id2, direction, float(force)))
         #obj2['forces'].append((id1, -direction, force))
     
     def calculateForces(self):
@@ -217,14 +218,14 @@ class Simulation():
         # save the simulation to a json file
         
         with open(path, 'w') as f:
-            f.write(self.createSaveData())
+            pickle.dump(self.createSaveData(), f)
     
     # MARK: - Load simulation
     def load(self, path):
         # load the simulation from a json file
         
         with open(path, 'r') as f:
-            data = f.read()
+            data = pickle.load(f)
         
         
         self.dimensions = data['dimensions']
