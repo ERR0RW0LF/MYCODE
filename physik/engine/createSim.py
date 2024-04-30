@@ -71,10 +71,9 @@ class Simulation():
         # the simulation space is a grid with the size of the simulation space in each dimension of the simulation
         # the simulation space is used to calculate the forces acting on the objects in the simulation
         self.simSpace = np.zeros(tuple([self.size]*self.dimensions))
-        # q: what is a tuple?
-        
-        
         
         # add the objects to the simulation space at their positions 
-
+        for id, obj in self.objects.items():
+            position = obj['position']
+            self.simSpace[tuple(position)] = id
 
