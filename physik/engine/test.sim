@@ -1,0 +1,29 @@
+{
+    "size": [
+        {
+            "x": 10,
+            "y": 10,
+            "z": 0
+        }
+    ],
+    "bodies": [
+        {
+            "mass": 1,
+            "position": [0, 0],
+            "velocity": [0, 0],
+            "shape": "circle"
+        },
+        {
+            "mass": 1,
+            "position": [1, 0],
+            "velocity": [0, 0],
+            "shape": "circle"
+        }
+    ],
+    "forces": [
+        {
+            "strength": 1,
+            "direction": [1, 0]
+        }
+    ]
+}
