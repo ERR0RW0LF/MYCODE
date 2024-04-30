@@ -217,14 +217,14 @@ class Simulation():
         # save the simulation to a json file
         
         with open(path, 'w') as f:
-            f.write(json.dumps(self.createSaveData(), indent=4))
+            f.write(self.createSaveData())
     
     # MARK: - Load simulation
     def load(self, path):
         # load the simulation from a json file
         
         with open(path, 'r') as f:
-            data = json.load(f)
+            data = f.read()
         
         
         self.dimensions = data['dimensions']
@@ -283,13 +283,13 @@ def main():
     sim.run()
     
     # save the simulation
-    #sim.save('simulation.json')
+    sim.save('simulation.sim')
     
     # load the simulation
-    #sim.load('simulation.json')
+    sim.load('simulation.sim')
     
     # run the simulation
-    #sim.run()
+    sim.run()
 
 # MARK: - Run main function
 if __name__ == '__main__':
