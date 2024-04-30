@@ -1,4 +1,8 @@
 # Object class
+import json
+from jinja2 import pass_context
+
+
 class Object():
     # MARK: - Initialize
     # Initialize the object
@@ -69,24 +73,80 @@ class Object():
         if orientation_matrix_inverse:
             self.orientation_matrix_inverse = orientation_matrix_inverse
     
-    # calculate new velocity using the forces acting on the object in different directions and the object's mass
-    # F = m*a
-    # a = F/m
-    # a = dv/dt
-    # dv = a*dt
-    # v = v + dv
+    # MARK: - Update
+    # Update the object using the necessary variables to calculate the other variables of the object
+    def update(self, forces, time):
+        # calculate acceleration using time and velocity
+        pass
+    
+    
+    
+    
+    
     # MARK: - Velocity
-    # Calculate new velocity
-    def calculate_velocity(self, forces, time):
-        acceleration = [0, 0, 0]
-        for force in forces:
-            acceleration[0] += force[0]/self.mass
-            acceleration[1] += force[1]/self.mass
-            acceleration[2] += force[2]/self.mass
+    # Calculate new velocity using acceleration and time
+    def calculate_velocity_from_acceleration(self, acceleration:list=[0,0,0], time:float=1):
         self.velocity[0] += acceleration[0]*time
         self.velocity[1] += acceleration[1]*time
         self.velocity[2] += acceleration[2]*time
-
+    
+    
+    
+    
+    
+    # MARK: - Acceleration
+    # Calculate new acceleration using force
+    def calculate_acceleration_from_forces(self, forces:list=[[0,0,0]]):
+        for force in forces:
+            self.acceleration[0] += force[0]/self.mass
+            self.acceleration[1] += force[1]/self.mass
+            self.acceleration[2] += force[2]/self.mass
+    
+    
+    
+    
+    # MARK: - Position
+    # Calculate new position using velocity and time
+    def calculate_position_from_velocity(self, velocity:list=[0,0,0], time:float=1):
+        self.position[0] += velocity[0]*time
+        self.position[1] += velocity[1]*time
+        self.position[2] += velocity[2]*time
+    
+    
+    
+    
+    
+    # MARK: - Velocity from Forces
+    # Calculate new velocity using forces and time
+    def calculate_velocity(self, forces:list=[[0,0,0]], time:float=1):
+        # calculate acceleration
+        self.calculate_acceleration_from_forces(forces)
+        # calculate velocity
+        self.calculate_velocity_from_acceleration(self.acceleration, time)
+    
+    
+    
+    
+    
+    # MARK: - Cycle
+    # Cycle the object using the necessary variables to calculate the other variables of the object
+    def cycle(self, forces, time):
+        # calculate new velocity
+        self.calculate_velocity(forces, time)
+        # calculate new position
+        self.calculate_position_from_velocity(self.velocity, time)
+        # calculate new acceleration
+        self.calculate_acceleration_from_forces(forces)
+    
+    
+    
+    
+    # MARK: - Save
+    # Save the object to a file
+    def save(self, file:str):
+        # save the object to a file
+        with open(file, "w") as file:
+            json.dump(self.__dict__, file)
 
 
 
@@ -117,6 +177,9 @@ def test():
     print("--------------------")
     object.calculate_velocity(forces, time)
     print("object.velocity: ", object.velocity)
+    
+    # test save
+    object.save("object.json")
 
 # test the object class
 test()
