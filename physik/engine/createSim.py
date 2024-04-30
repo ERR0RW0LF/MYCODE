@@ -15,6 +15,7 @@ class Simulation():
         self.dimensions = 0 # number of dimensions the simulation is in (2D or 3D) maybe 1D or 4D in the future
         self.size = 0 # size of the simulation space in each dimension (e.g. 3D: 10m x 10m x 10m, size = 10, dimensions = 3, 2D: 10m x 10m, size = 10, dimensions = 2)
         self.simSpace = None # the simulation space as a np.array (e.g. 3D: 10m x 10m x 10m, size = 10, dimensions = 3, 2D: 10m x 10m, size = 10, dimensions = 2)
+        self.gravCon = 6.67430e-11 # gravitational constant in m^3 kg^-1 s^-2
     
     def setDimensions(self, dimensions):
         self.dimensions = dimensions
@@ -76,4 +77,36 @@ class Simulation():
         for id, obj in self.objects.items():
             position = obj['position']
             self.simSpace[tuple(position)] = id
-
+    
+    def calculateForces(self):
+        # calculate the forces acting on the objects in the simulation
+        # the forces are calculated based on the properties of the objects and the constraints in the simulation
+        # the forces are saved in the objects in the simulation
+        
+        # reset the forces of the objects
+        for id, obj in self.objects.items():
+            obj['forces'] = []
+        
+        # calculate the forces acting on a pair of objects
+        
+    def calculateForce(self, obj1, obj2):
+        # calculate the force acting on object 1 by object 2
+        # the force is calculated based on the properties of the objects and the constraints in the simulation
+        # the force is saved in the object 1 and object 2 in the simulation
+        
+        obj1 = self.objects[obj1]
+        obj2 = self.objects[obj2]
+        
+        # calculate the direction of the force
+        obj1_position = np.array(obj1['position'])
+        obj2_position = np.array(obj2['position'])
+        direction = obj2_position - obj1_position
+        
+        # calculate the magnitude of the force
+        force = self.gravCon * obj1['mass'] * obj2['mass'] / np.linalg.norm(direction)**2
+        
+        # save the force in the object 1 and object 2
+        obj1['forces'].append((obj2['id'], direction, force))
+        obj2['forces'].append((obj1['id'], -direction, force))
+        
+        
