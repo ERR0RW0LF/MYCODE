@@ -2,7 +2,7 @@
 class Object():
     # MARK: - Initialize
     # Initialize the object
-    def __init__(self, name, mass, position, velocity, acceleration, vector, size, color=None, force=None, torque=None, angular_velocity=None, angular_acceleration=None, angular_vector=None, moment_of_inertia=None, center_of_mass=[0,0,0], orientation=None, angular_momentum=None, angular_impulse=None, orientation_matrix=None, orientation_matrix_inverse=None, orientation_matrix_transpose=None, orientation_matrix_transpose_inverse=None):
+    def __init__(self, name:str, mass:float, position, velocity, acceleration, vector, size:float, color:list=None, force:float=None, torque=None, angular_velocity=None, angular_acceleration=None, angular_vector=None, moment_of_inertia=None, center_of_mass=[0,0,0], orientation=None, angular_momentum=None, angular_impulse=None, orientation_matrix=None, orientation_matrix_inverse=None, orientation_matrix_transpose=None, orientation_matrix_transpose_inverse=None):
         self.name = name # str (name of the object) (e.g. "ball", "car", "plane", "rocket", etc.)
         self.mass = mass # kg (mass of the object) (m) (e.g. 1, 2, 3, 4, 5, etc.) is the amount of matter in an object
         self.position = position # m (position of the object) (x, y, z) is the location of the object in space
@@ -69,4 +69,51 @@ class Object():
         if orientation_matrix_inverse:
             self.orientation_matrix_inverse = orientation_matrix_inverse
     
+    # calculate new velocity using the forces acting on the object in different directions and the object's mass
+    # F = m*a
+    # a = F/m
+    # a = dv/dt
+    # dv = a*dt
+    # v = v + dv
+    def calculate_velocity(self, forces, time):
+        acceleration = [0, 0, 0]
+        for force in forces:
+            acceleration[0] += force[0]/self.mass
+            acceleration[1] += force[1]/self.mass
+            acceleration[2] += force[2]/self.mass
+        self.velocity[0] += acceleration[0]*time
+        self.velocity[1] += acceleration[1]*time
+        self.velocity[2] += acceleration[2]*time
+
+
+
+
+# test the object class
+def test():
+    # create an object
+    object = Object("ball", 1, [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], 1, force=0)
+    # test the object
+    assert object.name == "ball"
+    assert object.mass == 1
+    assert object.position == [0, 0, 0]
+    assert object.velocity == [0, 0, 0]
+    assert object.acceleration == [0, 0, 0]
+    assert object.vector == [0, 0, 0]
+    assert object.size == 1
+    assert object.color == None
+    assert object.force == 0
     
+    # force acting on the object
+    forces = [[1, 0, 1], [0, -1, 0], [1, 1, 1]]
+    # time
+    time = 1
+    # calculate new velocity
+    print("object.velocity: ", object.velocity)
+    print("forces: ", forces)
+    print("time: ", time)
+    print("--------------------")
+    object.calculate_velocity(forces, time)
+    print("object.velocity: ", object.velocity)
+
+# test the object class
+test()
