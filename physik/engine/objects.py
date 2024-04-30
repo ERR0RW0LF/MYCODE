@@ -6,7 +6,7 @@ from jinja2 import pass_context
 class Object():
     # MARK: - Initialize
     # Initialize the object
-    def __init__(self, name:str, mass:float, position, velocity, acceleration, vector, size:float, color:list=None, force:float=None, torque=None, angular_velocity=None, angular_acceleration=None, angular_vector=None, moment_of_inertia=None, center_of_mass=[0,0,0], orientation=None, angular_momentum=None, angular_impulse=None, orientation_matrix=None, orientation_matrix_inverse=None, orientation_matrix_transpose=None, orientation_matrix_transpose_inverse=None):
+    def __init__(self, name:str=None, mass:float=1, position:list=[0,0,0], velocity:list=[0,0,0], acceleration:list=[0,0,0], vector:list=[0,0,0], size:float=1, color:list=None, force:float=None, torque=None, angular_velocity=None, angular_acceleration=None, angular_vector=None, moment_of_inertia=None, center_of_mass=[0,0,0], orientation=None, angular_momentum=None, angular_impulse=None, orientation_matrix=None, orientation_matrix_inverse=None, orientation_matrix_transpose=None, orientation_matrix_transpose_inverse=None):
         self.name = name # str (name of the object) (e.g. "ball", "car", "plane", "rocket", etc.)
         self.mass = mass # kg (mass of the object) (m) (e.g. 1, 2, 3, 4, 5, etc.) is the amount of matter in an object
         self.position = position # m (position of the object) (x, y, z) is the location of the object in space
@@ -147,6 +147,20 @@ class Object():
         # save the object to a file
         with open(file, "w") as file:
             json.dump(self.__dict__, file)
+    
+    
+    
+    
+    # MARK: - Load
+    # Load the object from a file
+    def load(self, file:str):
+        # load the object from a file
+        with open(file, "r") as file:
+            data = json.load(file)
+            self.__dict__.update(data)
+    
+    
+    
 
 
 
@@ -180,6 +194,10 @@ def test():
     
     # test save
     object.save("object.json")
+    object2 = Object()
+    object2.load("object.json")
+    print("Object 1: ", object.__dict__)
+    print("Object 2: ", object2.__dict__)
 
 # test the object class
 test()
