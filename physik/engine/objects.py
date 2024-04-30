@@ -75,6 +75,8 @@ class Object():
     # a = dv/dt
     # dv = a*dt
     # v = v + dv
+    # MARK: - Velocity
+    # Calculate new velocity
     def calculate_velocity(self, forces, time):
         acceleration = [0, 0, 0]
         for force in forces:
@@ -88,6 +90,7 @@ class Object():
 
 
 
+# MARK: - Test
 # test the object class
 def test():
     # create an object
