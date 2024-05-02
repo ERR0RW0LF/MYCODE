@@ -15,7 +15,9 @@ class Simulation:
                 obj.id += 1
             self.objects[obj.id] = obj
     
-    def add_object(self, obj:Object):
+    def add_object(self, obj:Object, objId:int=None):
+        if objId is not None:
+            obj.id = objId
         while obj.id in self.objects:
             obj.id += 1
         self.objects[obj.id] = obj
@@ -48,9 +50,30 @@ class Simulation:
     def get_objects(self):
         return self.objects.keys()
     
+    def sim_info(self):
+        info = self.get_info()
+        return {
+            "max_x": self.max_x,
+            "max_y": self.max_y,
+            "max_z": self.max_z,
+            "objects": info
+        }
+    
     def save(self, path:str):
         with open(path, "w") as file:
-            json.dump(self.get_info(), file)
+            json.dump(self.sim_info(), file)
+    
+    def load(self, path:str):
+        with open(path, "r") as file:
+            data = json.load(file)
+            self.max_x = data["max_x"]
+            self.max_y = data["max_y"]
+            self.max_z = data["max_z"]
+            for objId, obj in data["objects"].items():
+                self.add_object(Object(obj["name"], obj["mass"], obj["position"], obj["velocity"], obj["acceleration"], obj["vector"], obj["size"], obj["color"], obj["force"], obj["torque"], obj["angular_velocity"], obj["angular_acceleration"], obj["angular_vector"], obj["moment_of_inertia"], obj["center_of_mass"], obj["orientation"], obj["angular_momentum"], obj["angular_impulse"], obj["orientation_matrix"], obj["orientation_matrix_inverse"]), objId)
+    
+    def clear(self):
+        self.objects = {}
 
 
 # Test the Simulation class
@@ -68,3 +91,7 @@ if __name__ == "__main__":
     simulation.display_info()
     print(simulation.get_objects())
     simulation.save("simulation.json")
+    simulation.clear()
+    simulation.display_info()
+    simulation.load("simulation.json")
+    simulation.display_info()
