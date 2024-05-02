@@ -1,6 +1,5 @@
 # Object class
 import json
-from jinja2 import pass_context
 
 
 class Object():
