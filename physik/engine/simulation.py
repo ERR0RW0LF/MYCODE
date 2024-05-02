@@ -1,3 +1,4 @@
+import json
 import pprint
 import random
 from objects import Object
@@ -43,6 +44,13 @@ class Simulation:
         print("\n", "-"*20, "\n", "Simulation Info:")
         pprint.pprint(self.get_info())
         print("-"*20, "\n")
+    
+    def get_objects(self):
+        return self.objects.keys()
+    
+    def save(self, path:str):
+        with open(path, "w") as file:
+            json.dump(self.get_info(), file)
 
 
 # Test the Simulation class
@@ -58,3 +66,5 @@ if __name__ == "__main__":
     simulation.display_info()
     simulation.update(1)
     simulation.display_info()
+    print(simulation.get_objects())
+    simulation.save("simulation.json")
