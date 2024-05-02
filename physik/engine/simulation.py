@@ -78,14 +78,18 @@ class Simulation:
     # MARK: - Forces
     # Calculate the forces between the objects
     def forces_between_objects(self, obj1:Object, obj2:Object):
-        force = [0,0,0]
+        forceVec = [0,0,0]
+        force = 0
         # F = G * m1 * m2 / r^2
         G = 6.67430 * 10**-11
-        r = ((obj1.position[0] - obj2.position[0])**2 + (obj1.position[1] - obj2.position[1])**2 + (obj1.position[2] - obj2.position[2])**2)**0.5
+        r = self.distance_between_objects(obj1, obj2)
         m1 = obj1.mass
         m2 = obj2.mass
-        force[0] = G * m1 * m2 / r**2
-        return force
+        force = G * m1 * m2 / r**2
+        forceVec[0] = force * (obj2.position[0] - obj1.position[0]) / r
+        forceVec[1] = force * (obj2.position[1] - obj1.position[1]) / r
+        forceVec[2] = force * (obj2.position[2] - obj1.position[2]) / r
+        return forceVec
 
     # Apply the forces between the objects
     def apply_forces(self):
@@ -93,10 +97,55 @@ class Simulation:
             for obj2 in self.objects.values():
                 if obj1.id != obj2.id:
                     force = self.forces_between_objects(obj1, obj2)
-                    obj1.force = force
-                    obj2.force = force
+                    obj1.force[0] += force[0]
+                    obj1.force[1] += force[1]
+                    obj1.force[2] += force[2]
+    
+    
+    # MARK: - Distance
+    # Calculate the distance between the objects
+    def distance_between_objects(self, obj1:Object, obj2:Object):
+        return ((obj1.position[0] - obj2.position[0])**2 + (obj1.position[1] - obj2.position[1])**2 + (obj1.position[2] - obj2.position[2])**2)**0.5
+    
+    
+    
+    
+    # MARK: - Collisions
+    # Calculate the collisions between the objects
+    def collisions_between_objects(self, obj1:Object, obj2:Object):
+        # first check if the objects nearest points are touching each other by checking the distance between there centers and the sum of there radii (size) if the distance is less than or equal the sum of the radii then the objects are touching
+        r = obj1.size + obj2.size
+        distance = self.distance_between_objects(obj1, obj2)
+        if distance <= r:
+            # calculate the new velocities of the objects
+            # calculate the new velocities of the objects
+            # v1 = ((m1 - m2) / (m1 + m2)) * v1 + ((2 * m2) / (m1 + m2)) * v2
+            # v2 = ((2 * m1) / (m1 + m2)) * v1 + ((m2 - m1) / (m1 + m2)) * v2
+            m1 = obj1.mass
+            m2 = obj2.mass
+            
+            v1Old = obj1.velocity
+            v2Old = obj2.velocity
+            
+            v1New = [0,0,0]
+            v2New = [0,0,0]
+            
+            v1New[0] = ((m1 - m2) / (m1 + m2)) * v1Old[0] + ((2 * m2) / (m1 + m2)) * v2Old[0]
+            v1New[1] = ((m1 - m2) / (m1 + m2)) * v1Old[1] + ((2 * m2) / (m1 + m2)) * v2Old[1]
+            v1New[2] = ((m1 - m2) / (m1 + m2)) * v1Old[2] + ((2 * m2) / (m1 + m2)) * v2Old[2]
+            
+            v2New[0] = ((2 * m1) / (m1 + m2)) * v1Old[0] + ((m2 - m1) / (m1 + m2)) * v2Old[0]
+            v2New[1] = ((2 * m1) / (m1 + m2)) * v1Old[1] + ((m2 - m1) / (m1 + m2)) * v2Old[1]
+            v2New[2] = ((2 * m1) / (m1 + m2)) * v1Old[2] + ((m2 - m1) / (m1 + m2)) * v2Old[2]
+            
+            obj1.velocity = v1New
+            obj2.velocity = v2New
 
 
+
+
+
+# MARK: - Test
 # Test the Simulation class
 if __name__ == "__main__":
     simulation = Simulation(100, 100, 100)
