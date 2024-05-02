@@ -74,6 +74,27 @@ class Simulation:
     
     def clear(self):
         self.objects = {}
+    
+    # MARK: - Forces
+    # Calculate the forces between the objects
+    def forces_between_objects(self, obj1:Object, obj2:Object):
+        force = [0,0,0]
+        # F = G * m1 * m2 / r^2
+        G = 6.67430 * 10**-11
+        r = ((obj1.position[0] - obj2.position[0])**2 + (obj1.position[1] - obj2.position[1])**2 + (obj1.position[2] - obj2.position[2])**2)**0.5
+        m1 = obj1.mass
+        m2 = obj2.mass
+        force[0] = G * m1 * m2 / r**2
+        return force
+
+    # Apply the forces between the objects
+    def apply_forces(self):
+        for obj1 in self.objects.values():
+            for obj2 in self.objects.values():
+                if obj1.id != obj2.id:
+                    force = self.forces_between_objects(obj1, obj2)
+                    obj1.force = force
+                    obj2.force = force
 
 
 # Test the Simulation class
