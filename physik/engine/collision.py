@@ -45,6 +45,11 @@ class Collision:
         v1t_f = v1t
         v2t_f = v2t
         # calculate the final velocity
-        v1        
+        v1_f = [v1n_f*unit_normal[0]+v1t_f*unit_tangent[0], v1n_f*unit_normal[1]+v1t_f*unit_tangent[1], v1n_f*unit_normal[2]+v1t_f*unit_tangent[2]]
+        v2_f = [v2n_f*unit_normal[0]+v2t_f*unit_tangent[0], v2n_f*unit_normal[1]+v2t_f*unit_tangent[1], v2n_f*unit_normal[2]+v2t_f*unit_tangent[2]]
+        return [v1_f, v2_f]
+    
+    # MARK: - Inelastic Collision
+    
 
     
