@@ -1,3 +1,4 @@
+import re
 from turtle import back, pos
 import colorama
 from colorama import Fore, Back, Style
@@ -55,6 +56,7 @@ def printSquare(size, positionY=0):
         positionY += 1
     print(Style.RESET_ALL + '', end="")
     colorama.deinit()
+    return positionY
 
 '''
 # Initialize colorama
@@ -70,8 +72,10 @@ colorama.deinit()
 '''
 
 def main():
-    printSquare(1)
-    printSquare(2)
+    positionY = 0
+    positionY = printSquare(1,positionY)
+    
+    printSquare(2, positionY)
 
 if __name__ == "__main__":
     main()
