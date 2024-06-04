@@ -2,6 +2,133 @@ from pprint import pprint
 import sys
 import os
 import json
+from matplotlib import pyplot as plt
+
+usableSymbols = [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+    " ",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "0",
+    ".",
+    ",",
+    "?",
+    "!",
+    ":",
+    ";",
+    "-",
+    "_",
+    "'",
+    '"',
+    "(",
+    ")",
+    "[",
+    "]",
+    "{",
+    "}",
+    "/",
+    "\\",
+    "|",
+    "@",
+    "#",
+    "$",
+    "%",
+    "^",
+    "&",
+    "*",
+    "+",
+    "=",
+    "<",
+    ">",
+    "~",
+    "`",
+    "€",
+    "£",
+    "¥",
+    "@",
+    "§",
+    "°",
+    "ü",
+    "ö",
+    "ä",
+    "Ü",
+    "Ö",
+    "Ä",
+    "ß",
+    "„",
+    "“",
+    "”",
+    "‘",
+    "’",
+    "‚",
+    "´",
+    "`",
+    "«",
+    "»",
+    "–",
+    "—",
+    "…",
+    "•",
+    "·",
+]
 
 # q: how can i get the path of the file that i am running without the file name
 # a: use os.path.dirname(os.path.realpath(__file__))
@@ -11,10 +138,11 @@ def text_analyses(text:str):
         'a': 0,
     }
     for symbol in text:
-        if symbol not in symbols:
-            symbols[symbol] = 1
-        else:
-            symbols[symbol] += 1
+        if symbol in usableSymbols:
+            if symbol not in symbols:
+                symbols[symbol] = 1
+            else:
+                symbols[symbol] += 1
     
     return symbols
 
@@ -30,6 +158,18 @@ def sort_dict(dict):
             new_dict[count] = []
             new_dict[count].append(key)
     return new_dict
+
+def plot_dict(dict):
+    x = []
+    y = []
+    for key in dict:
+        x.append(key)
+    x.sort()
+    for key in x:
+        y.append(dict[key])
+    
+    plt.plot(x, y, 'ro')
+    plt.show()
 
 if len(sys.argv) >= 2:
     paths = sys.argv[1:]
@@ -50,6 +190,8 @@ if len(sys.argv) >= 2:
         else:
             print('File not found')
             sys.exit(1)
+    
+    plot_dict(symbolsTotal)
     
     # sort keys by value
     symbolsTotal = sort_dict(symbolsTotal)
