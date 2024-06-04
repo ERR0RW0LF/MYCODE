@@ -168,7 +168,7 @@ def plot_dict(dict):
     for key in x:
         y.append(dict[key])
     
-    plt.plot(x, y, 'ro')
+    plt.bar(x, y)
     plt.show()
 
 if len(sys.argv) >= 2:
