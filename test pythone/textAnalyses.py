@@ -3,6 +3,7 @@ import sys
 import os
 import json
 from matplotlib import pyplot as plt
+from requests import get
 
 usableSymbols = [
     "a",
@@ -170,6 +171,25 @@ def plot_dict(dict):
     
     plt.bar(x, y)
     plt.show()
+
+def getAllLinks(url:str):
+    links = []
+    response = get(url)
+    if response.status_code == 200:
+        html = response.text
+        start = 0
+        while True:
+            start = html.find('href="', start)
+            if start == -1:
+                break
+            start += 6
+            end = html.find('"', start)
+            link = html[start:end]
+            if link not in links:
+                links.append(link)
+    return links
+
+
 
 if len(sys.argv) >= 2:
     paths = sys.argv[1:]
