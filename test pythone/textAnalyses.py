@@ -61,7 +61,7 @@ if len(sys.argv) >= 2:
     # save to file
     print(os.path.dirname(os.path.realpath(__file__))+'\\symbolsTotal.json')
     with open(os.path.dirname(os.path.realpath(__file__))+'\\symbolsTotal.json', 'w', encoding="utf8") as file:
-        json.dump(symbolsTotal, file)
+        json.dump(symbolsTotal, file, ensure_ascii=False, indent=4)
     
 else:
     print('Usage: python textAnalyses.py <file_path>')
