@@ -1,6 +1,7 @@
 from pprint import pprint
 import sys
 import os
+import json
 
 # q: how can i get the path of the file that i am running without the file name
 # a: use os.path.dirname(os.path.realpath(__file__))
@@ -58,9 +59,9 @@ if len(sys.argv) >= 2:
     pprint(symbolsTotal)
     
     # save to file
-    print(os.path.dirname(os.path.realpath(__file__))+'\\symbolsTotal.txt')
-    with open(os.path.dirname(os.path.realpath(__file__))+'\\symbolsTotal.txt', 'w', encoding="utf8") as file:
-        file.write(str(symbolsTotal))
+    print(os.path.dirname(os.path.realpath(__file__))+'\\symbolsTotal.json')
+    with open(os.path.dirname(os.path.realpath(__file__))+'\\symbolsTotal.json', 'w', encoding="utf8") as file:
+        json.dump(symbolsTotal, file)
     
 else:
     print('Usage: python textAnalyses.py <file_path>')
