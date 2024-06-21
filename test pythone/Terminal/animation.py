@@ -63,7 +63,7 @@ class Animation:
         print(moveUp*self.Y)
         for frame in range(self.num_frames):
             self.set_frame(frame)
-            print(self.renderFrame())
+            print(self.renderFrame()+Style.RESET_ALL)
             time.sleep(self.delay)
             if frame < self.num_frames-1:
                 move(0,0)
