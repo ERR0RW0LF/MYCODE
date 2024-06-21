@@ -1006,7 +1006,7 @@ symbolsX = compleatAnimation.shape[1]
 symbolsY = compleatAnimation.shape[2]
 animation = Animation(framesN, symbolsX, symbolsY, 0.1)
 animation.set_animation(compleatAnimation)
-animation.play(StyleRender=Fore.GREEN+Back.BLUE)
-animation.play(StyleRender=Fore.BLUE+Back.GREEN)
+animation.play(StyleRender=Fore.LIGHTRED_EX+Back.BLUE)
+animation.play(StyleRender=Fore.BLUE+Back.LIGHTRED_EX)
 
 print(Fore.GREEN + "Animation is compleated!" + Style.RESET_ALL)
