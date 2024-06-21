@@ -47,8 +47,8 @@ class Animation:
         self.animation[self.frame][x][y] = 0
         self.animation[self.frame][x+dx][y+dy] = symbol
     
-    def renderFrame(self):
-        printStyle = Fore.BLUE + Back.GREEN
+    def renderFrame(self, StyleRender=Fore.BLUE + Back.GREEN):
+        printStyle = StyleRender
         frameRender = printStyle
         for y in range(self.Y):
             frameRender += printStyle
@@ -58,7 +58,7 @@ class Animation:
         frameRender += Style.RESET_ALL
         return frameRender
     
-    def play(self):
+    def play(self, StyleRender=Fore.BLUE + Back.GREEN):
         print(clearScreen)
         print(moveUp*self.Y)
         move(0,0)
@@ -67,7 +67,7 @@ class Animation:
         print(Style.RESET_ALL)
         for frame in range(self.num_frames):
             self.set_frame(frame)
-            print(self.renderFrame()+Style.RESET_ALL)
+            print(self.renderFrame(StyleRender)+Style.RESET_ALL)
             time.sleep(self.delay)
             if frame < self.num_frames-1:
                 move(0,0)
@@ -1006,6 +1006,7 @@ symbolsX = compleatAnimation.shape[1]
 symbolsY = compleatAnimation.shape[2]
 animation = Animation(framesN, symbolsX, symbolsY, 0.1)
 animation.set_animation(compleatAnimation)
-animation.play()
+animation.play(StyleRender=Fore.GREEN+Back.BLUE)
+animation.play(StyleRender=Fore.BLUE+Back.GREEN)
 
 print(Fore.GREEN + "Animation is compleated!" + Style.RESET_ALL)
