@@ -3,7 +3,6 @@ from PIL import Image
 import os
 import time
 import sys
-from colorama import Fore, Back, Style
 
 removeLine = '\033[F'
 moveUp = '\033[A'
