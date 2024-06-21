@@ -61,6 +61,10 @@ class Animation:
     def play(self):
         print(clearScreen)
         print(moveUp*self.Y)
+        move(0,0)
+        #print(moveDown*self.Y)
+        print(removeLine*self.Y)
+        print(Style.RESET_ALL)
         for frame in range(self.num_frames):
             self.set_frame(frame)
             print(self.renderFrame()+Style.RESET_ALL)
@@ -1000,7 +1004,7 @@ compleatAnimation = rotateArray(compleatAnimation)
 framesN = compleatAnimation.shape[0]
 symbolsX = compleatAnimation.shape[1]
 symbolsY = compleatAnimation.shape[2]
-animation = Animation(framesN, symbolsX, symbolsY, 0.2)
+animation = Animation(framesN, symbolsX, symbolsY, 0.1)
 animation.set_animation(compleatAnimation)
 animation.play()
 
