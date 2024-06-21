@@ -1,10 +1,7 @@
 import pprint
-import re
-from shutil import move
 import time
-from matplotlib import animation
 import numpy as np
-
+from colorama import Fore, Back, Style
 
 removeLine = '\033[F'
 moveUp = '\033[A'
