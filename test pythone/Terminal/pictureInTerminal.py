@@ -1,13 +1,23 @@
+from calendar import c
 import numpy as np
 from PIL import Image
 import os
 import time
 import sys
+import rich
+from rich.console import Console
+from rich.progress import Progress
+from rich import print
+from rich.style import Style
+from rich.panel import Panel
+
 
 removeLine = '\033[F'
 moveUp = '\033[A'
 moveDown = '\033[B'
 clearScreen = '\033[2J'
+
+console = Console()
 
 def get_image(image_path):
     try:
@@ -20,61 +30,82 @@ def get_image(image_path):
 def resize_image(image, new_width):
     width_percent = (new_width / float(image.size[0]))
     new_height = int((float(image.size[1]) * float(width_percent)))
-    resized_image = image.resize((new_width, new_height), Image.NEAREST)
+    resized_image = image.resize((int(new_width), int(new_height)), Image.NEAREST)
     return resized_image
 
-# colors that i can use
-# background colors for the most common color in an area of the image
-# foreground colors for the second common color in an area of the image
-colors = {
-    0: Fore.BLACK,
-    1: Fore.RED,
-    2: Fore.GREEN,
-    3: Fore.YELLOW,
-    4: Fore.BLUE,
-    5: Fore.MAGENTA,
-    6: Fore.CYAN,
-    7: Fore.WHITE,
-    8: Back.BLACK,
-    9: Back.RED,
-    10: Back.GREEN,
-    11: Back.YELLOW,
-    12: Back.BLUE,
-    13: Back.MAGENTA,
-    14: Back.CYAN,
-    15: Back.WHITE,
-}
+# symbol that is used to represent two pixels above each other background is the higher pixel and foreground is the lower pixel
+symbol = '▄'
 
-# symbols to represent the second common color in an area of the image
-symbols = {
-    0: ' ',
-    1: '.',
-    2: '-',
-    3: '+',
-    4: '*',
-    5: 'x',
-    6: '%',
-    7: '#',
-}
+def get_pixel_color(image:Image, x, y):
+    r, g, b = image.getpixel((x, y))
+    return r, g, b
 
-def most_common_color_of_area(image, x, y, width, height):
-    colors = image.crop((x, y, x + width, y + height)).getcolors(width * height)
-    return max(colors, key=lambda x: x[0])[1]
+class PixelImage():
+    def __init__(self, image:Image):
+        self.image = image
+        self.pixel_array = np.array(image)
+        self.width = self.pixel_array.shape[1]
+        self.height = self.pixel_array.shape[0]
+        if self.height % 2 != 0:
+            # add a row of black pixels to make the height even at the bottom
+            self.pixel_array = np.vstack((self.pixel_array, np.zeros((1, self.width, 3), dtype=np.uint8)))
+            self.height += 1
+        self.displayHeight = self.height / 2 # two pixels are represented by one symbol
+        
+    
+    def get_pixel_color(self, x, y):
+        r, g, b = self.image.getpixel((x, y))
+        return r, g, b
+    
+    def get_symbol(self, x, y):
+        upper_pixel = self.get_pixel_color(x, y)
+        lower_pixel = self.get_pixel_color(x, y+1)
+        return upper_pixel, lower_pixel
+    
+    def color_style(self, upper_pixel, lower_pixel):
+        style = Style(bgcolor=upper_pixel, color=lower_pixel)
+        return style
+    
+    
+    def run(self):
+        console.clear()
+        #console.log(Panel(f"Image size: {self.width}x{self.height}"))
+        for y in range(0, self.height-2, 2):
+            for x in range(self.width):
+                upper_pixel, lower_pixel = self.get_symbol(x, y)
+                #print('uper_pixel:', upper_pixel, '  lower_pixel:', lower_pixel)
+                style = Style(color=f'rgb{lower_pixel}', bgcolor=f'rgb{upper_pixel}')
+                #print(style, end='')
+                console.print(symbol, style=style, end='')
+            console.print()
+            #time.sleep(0.0001)
+    console.print()
 
-def second_common_color_of_area(image, x, y, width, height):
-    colors = image.crop((x, y, x + width, y + height)).getcolors(width * height)
-    colors = sorted(colors, key=lambda x: x[0], reverse=True)
-    if len(colors) > 1:
-        return colors[1][1]
-    return colors[0][1]
 
-def get_ratio_of_color(image, most_common_color, second_common_color, x, y, width, height):
-    colors = image.crop((x, y, x + width, y + height)).getcolors(width * height)
-    most_common_color_count = 0
-    second_common_color_count = 0
-    for color in colors:
-        if color[1] == most_common_color:
-            most_common_color_count += color[0]
-        elif color[1] == second_common_color:
-            second_common_color_count += color[0]
-    return most_common_color_count / (most_common_color_count + second_common_color_count)
+
+def main():
+    if len(sys.argv) > 1:
+        image_paths = sys.argv[1:]
+        for image_path in image_paths:
+            image = get_image(image_path)
+            if image:
+                #print(np.array(image).shape)
+                if image.height % 2 != 0:
+                    # add a row of black pixels to make the height even at the bottom
+                    image = Image.fromarray(np.vstack((image, np.zeros((1, image.width, 3), dtype=np.uint8))))
+                #print(np.array(image).shape)
+                new_width = (648)/image.height * image.width
+                image = resize_image(image, new_width)
+                pixel_image = PixelImage(image)
+                pixel_image.run()
+    else:
+        image_path = 'test pythone/Terminal/bild.png'
+        image = get_image(image_path)
+        if image:
+            new_width = 100
+            image = resize_image(image, new_width)
+            pixel_image = PixelImage(image)
+            pixel_image.run()
+
+if __name__ == '__main__':
+    main()
