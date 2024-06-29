@@ -1,15 +1,9 @@
-from calendar import c
 import numpy as np
 from PIL import Image
-import os
-import time
 import sys
-import rich
 from rich.console import Console
-from rich.progress import Progress
 from rich import print
 from rich.style import Style
-from rich.panel import Panel
 
 
 removeLine = '\033[F'
@@ -94,7 +88,7 @@ def main():
                     # add a row of black pixels to make the height even at the bottom
                     image = Image.fromarray(np.vstack((image, np.zeros((1, image.width, 3), dtype=np.uint8))))
                 #print(np.array(image).shape)
-                new_width = (2*648)/image.height * image.width
+                new_width = (648)/image.height * image.width
                 image = resize_image(image, new_width)
                 pixel_image = PixelImage(image)
                 pixel_image.run()
