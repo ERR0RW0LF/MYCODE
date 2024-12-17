@@ -22,6 +22,7 @@ def get_image(image_path):
         return None
 
 def resize_image(image, new_width):
+    print()
     width_percent = (new_width / float(image.size[0]))
     new_height = int((float(image.size[1]) * float(width_percent)))
     resized_image = image.resize((int(new_width), int(new_height)), Image.NEAREST)
@@ -88,7 +89,7 @@ def main():
                     # add a row of black pixels to make the height even at the bottom
                     image = Image.fromarray(np.vstack((image, np.zeros((1, image.width, 3), dtype=np.uint8))))
                 #print(np.array(image).shape)
-                new_width = (648)/image.height * image.width
+                new_width = (2*648)/image.height * image.width
                 image = resize_image(image, new_width)
                 pixel_image = PixelImage(image)
                 pixel_image.run()

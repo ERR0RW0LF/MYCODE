@@ -1,0 +1,6 @@
+[package]
+name = "rust_test_program_zero_zero_zero_zero"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
