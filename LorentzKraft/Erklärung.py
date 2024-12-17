@@ -11,7 +11,7 @@ class Erklärung(ThreeDScene):
         electronic_current = Arrow3D(start=ORIGIN, end=UP, color=GREEN)
         magnetic_field = Arrow3D(start=ORIGIN, end=OUT, color=BLUE)
         
-        force_text = Text("Lorentzkraft", font="Arial").scale(0.4).next_to(force, RIGHT, buff=0.1).rotate(75*DEGREES, axis=UP).rotate(30*DEGREES, axis=OUT).rotate(90*DEGREES, axis=OUT, about_point=force.get_center())
+        force_text = Text("Lorentzkraft", font="Arial").scale(0.4).next_to(force, RIGHT, buff=0.1).rotate(75*DEGREES, axis=UP).rotate(30*DEGREES, axis=OUT).rotate(90*DEGREES, axis=OUT, about_point=force_text)
         electronic_current_text = Text("Stromfluss", font="Arial").scale(0.4).next_to(electronic_current, UP, buff=0.1).rotate(75*DEGREES, axis=UP).rotate(30*DEGREES, axis=OUT)
         magnetic_field_text = Text("Magnetfeld", font="Arial").scale(0.4).next_to(magnetic_field, OUT, buff=0.1).rotate(75*DEGREES, axis=UP).rotate(30*DEGREES, axis=OUT)
         # q: how do i rotate the text so it is always facing the camera?
