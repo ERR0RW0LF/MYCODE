@@ -51,7 +51,7 @@ def plot_pallet(image_pallet):
     ax = fig.add_subplot(111, projection='3d')
     for color in image_pallet:
         #pprint(color)
-        ax.scatter(color[0], color[1], color[2], marker='o',c=[np.array(color, dtype=float)/255])
+        ax.scatter(color[0], color[1], color[2], marker='o',c=[np.array(color, dtype=float)/255], s=0.1)
     ax.set_xlabel('Red Value')
     ax.set_ylabel('Green Value')
     ax.set_zlabel('Blue Value')
@@ -82,6 +82,7 @@ def save_pallet_image(image_pallet, save_path):
 
 def main():
     arguments = sys.argv[1:]
+    flattened_pallet = {}
     for i in range(len(arguments)):
         arguments[i] = arguments[i].replace("\\", "/") 
     if len(arguments) == 1:
