@@ -51,7 +51,7 @@ def plot_pallet(image_pallet):
     ax = fig.add_subplot(111, projection='3d')
     for color in image_pallet:
         #pprint(color)
-        ax.scatter(color[0], color[1], color[2], marker='o',c=[np.array(color, dtype=float)/255], s=image_pallet[color])
+        ax.scatter(color[0], color[1], color[2], marker='o',c=[np.array(color, dtype=float)/255])
     ax.set_xlabel('Red Value')
     ax.set_ylabel('Green Value')
     ax.set_zlabel('Blue Value')
@@ -129,18 +129,24 @@ def main():
     
     save_path = "image_pallet.csv"
     if os.path.exists(save_path):
-        flattened_pallet = load_pallet(save_path)
-        flattened_pallet.update(flattened_pallet)
+        loaded_flattened_pallet = load_pallet(save_path)
+        for color in loaded_flattened_pallet:
+            if color in flattened_pallet:
+                flattened_pallet[color] += loaded_flattened_pallet[color]
+            else:
+                flattened_pallet[color] = loaded_flattened_pallet[color]
         os.remove(save_path)
 
 
-    plot_pallet(flattened_pallet)
     save_pallet(flattened_pallet, save_path)
     
     save_path = "image_pallet.png"
     if os.path.exists(save_path):
         os.remove(save_path)
     save_pallet_image(flattened_pallet, save_path)
+    
+    
+    plot_pallet(flattened_pallet)
 
 if __name__ == '__main__':
     main()
