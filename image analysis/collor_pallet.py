@@ -82,7 +82,7 @@ def save_pallet_image(image_pallet, save_path):
 
 def main():
     arguments = sys.argv[1:]
-    flattened_pallet = {}
+    flattened_pallet = {}   
     for i in range(len(arguments)):
         arguments[i] = arguments[i].replace("\\", "/") 
     if len(arguments) == 1:
